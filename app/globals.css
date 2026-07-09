@@ -504,6 +504,37 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
+/* Form Input Styles */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea {
+  font-family: var(--font-body);
+}
+
+input[type="text"]:autofill,
+input[type="date"]:autofill,
+input[type="number"]:autofill {
+  -webkit-autofill: none;
+}
+
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(192, 193, 255, 0.2);
+  border-radius: 3px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(192, 193, 255, 0.4);
+}
+
 /* Article Body content styles (Supports HTML and Markdown output) */
 .post-content {
   font-size: 1.05rem;
