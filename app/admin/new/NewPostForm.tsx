@@ -249,10 +249,51 @@ export default function NewPostForm({ availableTags }: NewPostFormProps) {
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
+    if (!title || !slug || !content || selectedTags.length === 0) {
+      showToast('Vui lòng điền đầy đủ các thông tin bắt buộc (Tiêu đề, Slug, Nội dung, Thẻ) trước khi xuất bản', 'error');
+      return;
+    }
+    
     setIsPublishing(true);
-    showToast('Đang gửi yêu cầu xuất bản (Chờ nối API)...', 'info');
-    setTimeout(() => setIsPublishing(false), 1500);
+    showToast('Đang gửi yêu cầu xuất bản bài viết lên GitHub...', 'info');
+
+    try {
+      const response = await fetch('/api/admin/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug,
+          title,
+          date,
+          tags: selectedTags,
+          content,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Xuất bản thất bại');
+      }
+
+      // Clear draft on successful publish
+      localStorage.removeItem('ai_up_draft_post');
+      setHasDraft(false);
+
+      showToast('Đã xuất bản thành công! Vercel sẽ tự động deploy trong 1-2 phút.', 'success');
+      
+      // Redirect back to dashboard after 3 seconds
+      setTimeout(() => {
+        window.location.href = '/admin';
+      }, 3000);
+
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || 'Lỗi kết nối khi xuất bản', 'error');
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   return (
