@@ -294,7 +294,68 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
 }
 
+/* Bottom Navigation */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  background: rgba(27, 27, 32, 0.8);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(71, 69, 84, 0.3);
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
 
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
+  }
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-btn.active {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.nav-btn:not(.active):hover {
+  background: rgba(128, 131, 255, 0.05);
+  color: var(--on-surface);
+}
+
+.nav-btn:active {
+  transform: scale(0.9);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.nav-btn:hover .nav-icon {
+  transform: scale(1.1);
+}
 
 /* Detail Page elements */
 .back-btn {
