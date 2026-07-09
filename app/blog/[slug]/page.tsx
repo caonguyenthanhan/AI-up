@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getSortedPostsData, getPostData } from '@/lib/posts';
+import { getBlogArticles, getBlogArticleBySlug, getNextArticle, getPreviousArticle } from '@/lib/blog-data';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -11,19 +11,23 @@ interface BlogPostPageProps {
 
 // Generate static params for SSG
 export async function generateStaticParams() {
-  const posts = getSortedPostsData();
-  return posts.map((post) => ({
-    slug: post.slug,
+  const articles = getBlogArticles();
+  return articles.map((article) => ({
+    slug: article.slug,
   }));
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getPostData(slug);
+  const post = getBlogArticleBySlug(slug);
 
   if (!post) {
     notFound();
   }
+
+  // Get next/previous posts
+  const nextPost = getNextArticle(slug);
+  const previousPost = getPreviousArticle(slug);
 
   return (
     <article>
@@ -63,25 +67,62 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <line x1="8" y1="2" x2="8" y2="6"></line>
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
-          <time>{post.dateString}</time>
+          <time>{new Date(post.date).toLocaleDateString('vi-VN')}</time>
+          <span className="meta-dot">•</span>
+          <span>{post.readTime} phút đọc</span>
         </div>
         <h1 className="post-title" id="post-title-heading">{post.title}</h1>
-        {post.tags.length > 0 && (
-          <div className="post-tags-list">
-            {post.tags.map((tag) => (
-              <span key={tag} className="post-tag-badge">
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
+        <div className="post-tags-list">
+          <span className="post-tag-badge">#{post.tag}</span>
+        </div>
       </header>
 
-      {/* Render parsed HTML/Markdown contents */}
+      {/* Render content */}
       <section 
         className="post-content" 
-        dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
+        dangerouslySetInnerHTML={{ __html: post.content }} 
       />
+
+      {/* Navigation between posts */}
+      <nav className="post-navigation">
+        <div className="nav-item nav-prev">
+          {previousPost ? (
+            <Link href={`/blog/${previousPost.slug}`} className="nav-link">
+              <span className="nav-arrow">←</span>
+              <div className="nav-content">
+                <span className="nav-label">Bài trước</span>
+                <span className="nav-title">{previousPost.title}</span>
+              </div>
+            </Link>
+          ) : (
+            <div className="nav-link disabled">
+              <span className="nav-arrow">←</span>
+              <div className="nav-content">
+                <span className="nav-label">Bài đầu tiên</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="nav-item nav-next">
+          {nextPost ? (
+            <Link href={`/blog/${nextPost.slug}`} className="nav-link">
+              <div className="nav-content">
+                <span className="nav-label">Bài tiếp theo</span>
+                <span className="nav-title">{nextPost.title}</span>
+              </div>
+              <span className="nav-arrow">→</span>
+            </Link>
+          ) : (
+            <div className="nav-link disabled">
+              <div className="nav-content">
+                <span className="nav-label">Bài cuối cùng</span>
+              </div>
+              <span className="nav-arrow">→</span>
+            </div>
+          )}
+        </div>
+      </nav>
     </article>
   );
 }
