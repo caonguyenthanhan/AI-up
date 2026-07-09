@@ -10,7 +10,7 @@ const SESSION_DURATION = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
 function generateSessionHash(password: string): string {
   return crypto
     .createHash('sha256')
-    .update(password + process.env.ADMIN_PASSWORD)
+    .update(password)
     .digest('hex');
 }
 
