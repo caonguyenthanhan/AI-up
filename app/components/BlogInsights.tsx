@@ -15,7 +15,7 @@ interface Article {
 const BlogInsights = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('All');
-  const [sortOrder, setsortOrder] = useState<'latest' | 'oldest'>('latest');
+  const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
   const [scrollProgress, setScrollProgress] = useState(0);
 
   // Featured article

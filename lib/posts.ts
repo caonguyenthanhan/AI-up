@@ -143,7 +143,7 @@ export function getSortedPostsData(): PostData[] {
       let tags: string[] = [];
       let contentHtml = '';
       let excerpt = '';
-      const fileType = fileName.endsWith('.html') ? 'html' : 'md';
+      const fileType: 'html' | 'md' = fileName.endsWith('.html') ? 'html' : 'md';
 
       if (fileType === 'html') {
         // Parse HTML
