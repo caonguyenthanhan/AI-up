@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3: Thiết Kế Blog Tĩnh Hiệu Năng Cao Với Next.js & SSG</title>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Sáu, 10/07/2026</span>
+        <h1>Day 3: Thiết Kế Blog Tĩnh Hiệu Năng Cao Với Next.js & SSG</h1>
+        <div class="tags">#NextJS #SSG #WebPerformance #StaticBlog</div>
+    </header>
+
+    <main>
+        <p>Chào ông, hôm nay ở ngày 3, chúng ta sẽ phân tích lý do tại sao kiến trúc **Static Site Generation (SSG)** lại là lựa chọn hàng đầu cho các trang blog kỹ thuật và cách Next.js tối ưu hóa nó.</p>
+
+        <p>Khi build một trang web tĩnh, toàn bộ mã HTML được sinh ra từ lúc biên dịch (build time). Người dùng truy cập sẽ nhận ngay file HTML đã được render sẵn từ CDN gần nhất. Điều này giúp giảm chỉ số <span class="highlight">Time to First Byte (TTFB)</span> xuống mức mili-giây.</p>
+
+        <h2>Tại sao SSG của Next.js lại mạnh mẽ?</h2>
+        <p>Next.js kết hợp hoàn hảo giữa tính tĩnh và tính động:</p>
+        <ul>
+            <li><strong>Prerendering tĩnh:</strong> Hàm <code>generateStaticParams</code> giúp khai báo trước các tham số động để Next.js sinh sẵn HTML cho từng bài viết.</li>
+            <li><strong>Hydration nhẹ nhàng:</strong> Khi tải trang, chỉ một lượng nhỏ JavaScript được nạp để kích hoạt các tính năng tương tác (như bộ lọc tag, hiệu ứng hover).</li>
+        </ul>
+
+        <div class="action-box">
+            <h3>Hộp hành động: Kiểm tra hoạt động của bài viết mới</h3>
+            <p>Bài viết này được tạo ra để kiểm thử khả năng phát hiện động của parser. Hệ thống sẽ tự động thêm tag <code>#NextJS</code>, <code>#SSG</code> vào danh sách lọc.</p>
+        </div>
+    </main>
+</body>
+</html>
