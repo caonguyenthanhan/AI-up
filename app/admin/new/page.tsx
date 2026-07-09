@@ -1,9 +1,15 @@
 import React from 'react';
-import { getSortedPostsData } from '@/lib/posts';
+import { getSortedPostsData, getPostData } from '@/lib/posts';
 import NewPostForm from './NewPostForm';
 
+interface NewPostPageProps {
+  searchParams: Promise<{
+    slug?: string;
+  }>;
+}
+
 // Since this is a server component, we can use Node fs via lib/posts safely.
-export default function NewPostPage() {
+export default async function NewPostPage({ searchParams }: NewPostPageProps) {
   const posts = getSortedPostsData();
   
   // Extract all unique tags
@@ -11,5 +17,27 @@ export default function NewPostPage() {
     new Set(posts.flatMap((post) => post.tags || []))
   ).sort();
 
-  return <NewPostForm availableTags={availableTags} />;
+  const { slug } = await searchParams;
+  let initialPost = null;
+
+  if (slug) {
+    const post = getPostData(slug);
+    if (post) {
+      // Extract ISO date for <input type="date"> (format: YYYY-MM-DD)
+      const dateVal = post.date 
+        ? new Date(post.date).toISOString().split('T')[0] 
+        : new Date().toISOString().split('T')[0];
+        
+      initialPost = {
+        slug: post.slug,
+        title: post.title,
+        date: dateVal,
+        tags: post.tags || [],
+        excerpt: post.excerpt || '',
+        content: post.contentHtml || '',
+      };
+    }
+  }
+
+  return <NewPostForm availableTags={availableTags} initialPost={initialPost} />;
 }

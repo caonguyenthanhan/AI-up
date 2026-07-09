@@ -5,6 +5,15 @@ import Link from 'next/link';
 
 interface NewPostFormProps {
   availableTags: string[];
+  initialPost?: {
+    slug: string;
+    title: string;
+    date: string;
+    tags: string[];
+    excerpt: string;
+    content: string;
+    readTime?: string;
+  } | null;
 }
 
 interface AISuggestions {
@@ -67,14 +76,14 @@ function MermaidPreview({ code }: { code: string }) {
   );
 }
 
-export default function NewPostForm({ availableTags }: NewPostFormProps) {
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [slug, setSlug] = useState('');
-  const [content, setContent] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [excerpt, setExcerpt] = useState('');
-  const [readTime, setReadTime] = useState('5');
+export default function NewPostForm({ availableTags, initialPost }: NewPostFormProps) {
+  const [title, setTitle] = useState(initialPost?.title || '');
+  const [date, setDate] = useState(initialPost?.date || new Date().toISOString().split('T')[0]);
+  const [slug, setSlug] = useState(initialPost?.slug || '');
+  const [content, setContent] = useState(initialPost?.content || '');
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialPost?.tags || []);
+  const [excerpt, setExcerpt] = useState(initialPost?.excerpt || '');
+  const [readTime, setReadTime] = useState(initialPost?.readTime || '5');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -83,9 +92,9 @@ export default function NewPostForm({ availableTags }: NewPostFormProps) {
   // AI Suggestions state
   const [aiSuggestions, setAiSuggestions] = useState<AISuggestions | null>(null);
 
-  // Auto-generate slug from title
+  // Auto-generate slug from title ONLY if we are creating a new post (not editing)
   useEffect(() => {
-    if (title) {
+    if (title && !initialPost) {
       const generatedSlug = title
         .toLowerCase()
         .normalize('NFD')
@@ -95,7 +104,7 @@ export default function NewPostForm({ availableTags }: NewPostFormProps) {
         .replace(/^-+|-+$/g, '');
       setSlug(generatedSlug);
     }
-  }, [title]);
+  }, [title, initialPost]);
 
   // Check if draft exists on mount
   useEffect(() => {
@@ -325,8 +334,8 @@ export default function NewPostForm({ availableTags }: NewPostFormProps) {
               Quay lại Dashboard
             </Link>
           </nav>
-          <h1 className="text-4xl font-bold text-on-surface mb-1">Viết bài mới</h1>
-          <p className="text-on-surface-variant text-sm">Soạn thảo nội dung và sử dụng trợ lý AI Assistant</p>
+          <h1 className="text-4xl font-bold text-on-surface mb-1">{initialPost ? 'Chỉnh sửa bài viết' : 'Viết bài mới'}</h1>
+          <p className="text-on-surface-variant text-sm">{initialPost ? 'Cập nhật lại nội dung và sử dụng trợ lý AI Assistant' : 'Soạn thảo nội dung và sử dụng trợ lý AI Assistant'}</p>
         </div>
 
         {/* Draft Restore Notification */}
@@ -453,7 +462,9 @@ export default function NewPostForm({ availableTags }: NewPostFormProps) {
               <span className="material-symbols-outlined text-[18px]">
                 {isPublishing ? 'sync' : 'publish'}
               </span>
-              {isPublishing ? 'Đang xuất bản...' : 'Xuất bản'}
+              {isPublishing 
+                ? (initialPost ? 'Đang cập nhật...' : 'Đang xuất bản...') 
+                : (initialPost ? 'Cập nhật bài viết' : 'Xuất bản')}
             </button>
           </div>
 
