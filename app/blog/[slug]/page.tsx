@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getBlogArticles, getBlogArticleBySlug, getNextArticle, getPreviousArticle } from '@/lib/blog-data';
+import MermaidRenderer from '@/app/components/MermaidRenderer';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -173,6 +174,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             className="article-content text-on-surface-variant leading-relaxed mb-20"
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
+
+          {/* Client-side Mermaid Renderer */}
+          <MermaidRenderer />
 
           {/* Previous/Next Navigation */}
           <section className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-outline-variant/30 pt-8">
