@@ -3,31 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 3: Thiết Kế Blog Tĩnh Hiệu Năng Cao Với Next.js & SSG</title>
+    <title>Day 3: Hệ Thống Đánh Giá (Evals) & Tracing — Thoát Khỏi Cái Bẫy "Test Bằng Mắt"</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #c2c0b6;
+        }
+        code {
+            background: #1a1a1a;
+            color: #D85A30;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
     <header>
         <span class="date">Thứ Sáu, 10/07/2026</span>
-        <h1>Day 3: Thiết Kế Blog Tĩnh Hiệu Năng Cao Với Next.js & SSG</h1>
-        <div class="tags">#NextJS #SSG #WebPerformance #StaticBlog</div>
+        <h1>Day 3: Hệ Thống Đánh Giá (Evals) & Tracing — Thoát Khỏi Cái Bẫy "Test Bằng Mắt"</h1>
+        <div class="tags">#LLMOps #Evals #RAGAS #Tracing</div>
     </header>
 
     <main>
-        <p>Chào ông, hôm nay ở ngày 3, chúng ta sẽ phân tích lý do tại sao kiến trúc **Static Site Generation (SSG)** lại là lựa chọn hàng đầu cho các trang blog kỹ thuật và cách Next.js tối ưu hóa nó.</p>
+        <p>Chào ông, tiếp tục chặng đường ngày thứ 3. Hai ngày trước, chúng ta đã tối ưu bộ nhớ RAM (Context Engineering) và trang bị khả năng suy luận logic bằng đồ thị (GraphRAG). Hệ thống của ông bắt đầu trông có vẻ chuyên nghiệp rồi đấy. Tuy nhiên, hôm nay tôi phải cảnh báo ông về một cái bẫy mà 90% các lập trình viên mới chuyển sang làm AI đều sập hầm: <strong>Cái bẫy "Test bằng mắt" (Eyeballing)</strong>.</p>
 
-        <p>Khi build một trang web tĩnh, toàn bộ mã HTML được sinh ra từ lúc biên dịch (build time). Người dùng truy cập sẽ nhận ngay file HTML đã được render sẵn từ CDN gần nhất. Điều này giúp giảm chỉ số <span class="highlight">Time to First Byte (TTFB)</span> xuống mức mili-giây.</p>
+        <p>Ông vừa viết xong một pipeline RAG mới. Ông mở terminal lên, gõ thử 5 câu hỏi ngẫu nhiên. Bot trả lời mượt mà, đúng trọng tâm, văn phong lịch sự. Ông vỗ tay, tự tin đưa bản cập nhật này lên môi trường production. Nhưng tuần sau, khách hàng phản ánh rằng bot liên tục bịa ra các điều khoản bảo hành không có thật, hoặc cung cấp sai hướng dẫn y tế nghiêm trọng. Tại sao lại như vậy?</p>
 
-        <h2>Tại sao SSG của Next.js lại mạnh mẽ?</h2>
-        <p>Next.js kết hợp hoàn hảo giữa tính tĩnh và tính động:</p>
+        <p>Vấn đề cốt lõi của việc phát triển phần mềm AI là tính <strong>không xác định (non-deterministic)</strong>. Với phần mềm truyền thống, ông viết Unit Test theo kiểu <code>assert output == expected</code>. Đầu vào là A thì đầu ra luôn là B. Nhưng với LLM, cùng một câu hỏi, hôm nay nó trả lời đúng, ngày mai nó đổi văn phong, ngày mốt nó "ảo giác" (hallucinate). Ông không thể dùng mắt người để ngồi đọc và kiểm tra 10,000 log chat mỗi ngày. Để đạt được mức lương và vị thế của một Senior AI Engineer, ông phải chuyển sang tư duy đánh giá có cấu trúc: <strong>Xây dựng hệ thống Đánh giá (Evals) và Truy vết (Tracing) tự động.</strong></p>
+
+        <h2>Kiến trúc 3 Trụ Cột Đánh Giá Tự Động (Evals Stack)</h2>
+        <p>Trong các dự án đòi hỏi độ tin cậy tuyệt đối (như báo cáo kỹ thuật tích hợp NVIDIA NIM và GraphRAG trong y tế mà chúng ta đang nghiên cứu), các kỹ sư không bao giờ đoán mò hiệu năng. Họ xây dựng một "Khung đánh giá và giám sát tích hợp" bao gồm 3 trụ cột:</p>
+
+        <p><strong>1. Chấm điểm tự động bằng mô hình (LLM-as-a-Judge) với RAGAS:</strong><br>
+        Thay vì thuê người ngồi đọc kết quả, ông dùng chính một mô hình AI mạnh (như GPT-4o hoặc Claude 3.5 Sonnet) làm giám khảo để chấm điểm mô hình ứng dụng của mình. RAGAS (Retrieval Augmented Generation Assessment) là một thư viện chuẩn cho việc này. Giám khảo AI sẽ xem xét 3 thành phần: <em>Câu hỏi của người dùng</em>, <em>Tài liệu được truy xuất</em>, và <em>Câu trả lời của bot</em>, từ đó tính toán các điểm số như Tính trung thực (Faithfulness) hay Độ liên quan của câu trả lời.</p>
+
+        <p>Đặc biệt, nghiên cứu y tế đã chỉ ra một hiện tượng cực kỳ nguy hiểm gọi là <span class="highlight">Accuracy Fallacy (Sai lầm độ chính xác)</span>. Đó là khi bot trả lời "đúng" về mặt kiến thức chung, nhưng lại "sai" so với hồ sơ cụ thể của bệnh nhân (bởi vì nó tự lấy kiến thức nội tại của nó ra trả lời thay vì đọc bệnh án). Để bắt lỗi này, các kỹ sư đưa ra chỉ số <strong>CUE (Context Utilization Efficiency)</strong>. Chỉ số này sẽ quét và ném câu trả lời của AI vào 4 vùng:
         <ul>
-            <li><strong>Prerendering tĩnh:</strong> Hàm <code>generateStaticParams</code> giúp khai báo trước các tham số động để Next.js sinh sẵn HTML cho từng bài viết.</li>
-            <li><strong>Hydration nhẹ nhàng:</strong> Khi tải trang, chỉ một lượng nhỏ JavaScript được nạp để kích hoạt các tính năng tương tác (như bộ lọc tag, hiệu ứng hover).</li>
+            <li><em>Vùng I (Evidence-Grounded):</em> Hoàn hảo. Câu trả lời chính xác và có bằng chứng trích xuất rõ ràng từ tài liệu.</li>
+            <li><em>Vùng II (Lucky Guesses):</em> Đoán mò may mắn. Trả lời đúng nhưng vô căn cứ với ngữ cảnh được cung cấp. Lỗi này rất nguy hiểm trong ngành y tế/pháp lý.</li>
+            <li><em>Vùng III (Redundant Context):</em> Tài liệu lấy lên có quá nhiều thông tin rác, khiến LLM lúng túng và bỏ sót ý chính.</li>
+            <li><em>Vùng IV (Hallucinatory):</em> Bịa đặt hoàn toàn. Cần báo động đỏ.</li>
         </ul>
+        </p>
 
-        <div class="action-box">
-            <h3>Hộp hành động: Kiểm tra hoạt động của bài viết mới</h3>
-            <p>Bài viết này được tạo ra để kiểm thử khả năng phát hiện động của parser. Hệ thống sẽ tự động thêm tag <code>#NextJS</code>, <code>#SSG</code> vào danh sách lọc.</p>
-        </div>
+        <p><strong>2. Truy vết chi tiết (Nested Tracing) với LangSmith:</strong><br>
+        Giả sử dashboard RAGAS báo cáo rằng câu hỏi số 45 bị điểm 0. Nếu không có hệ thống truy vết (Tracing), ông sẽ như người mù tìm kim trong bọc. LangSmith cung cấp một giao diện trực quan hóa dạng cây. Khi bấm vào câu hỏi bị lỗi, ông sẽ thấy toàn bộ các bước hệ thống đã chạy: mất bao nhiêu giây để gọi API, câu lệnh truy vấn sinh ra là gì, đoạn văn bản (chunk) nào thực sự được bốc lên, và prompt thô cuối cùng gửi cho LLM chứa những gì. Ông sẽ chẩn đoán được ngay: "À, lỗi không phải do LLM ngu, mà do thuật toán tìm kiếm lấy sai tài liệu!".</p>
+
+        <p><strong>3. Gỡ lỗi không gian nhúng với Arize Phoenix:</strong><br>
+        Nếu bước Tracing chỉ ra rằng Vector Database lấy sai tài liệu, ông sẽ cần Arize Phoenix. Công cụ này trực quan hóa các cụm vector đa chiều của ông xuống không gian 3D. Nhìn vào bản đồ này, ông sẽ thấy cụm vector "câu hỏi của người dùng" nằm lạc lỏng ở một góc, hoàn toàn không chạm tới cụm vector "tài liệu chính sách". Lúc này, hành động thực tiễn của một kỹ sư là điều chỉnh lại chiến lược cắt văn bản (chunking) hoặc đổi mô hình Embedding thay vì đi sửa prompt một cách vô vọng.</p>
+
+        <p>Trong môi trường production, luồng làm việc của ông phải là: <strong>Cập nhật code &rarr; Chạy tự động 500 câu test &rarr; LLM Judge chấm điểm &rarr; So sánh CUE metrics với bản cũ &rarr; Nhìn Tracing để sửa lỗi &rarr; Deploy.</strong> Dừng ngay việc test bằng cảm tính (vibes) lại, hãy dùng số liệu toán học để chứng minh AI của ông đang tốt lên.</p>
     </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380" width="100%">
+            <defs>
+                <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c2c0b6"/>
+                </marker>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c6af7"/>
+                </marker>
+                <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#EF9F27"/>
+                </marker>
+            </defs>
+
+            <!-- Production Application (Top) -->
+            <rect x="20" y="20" width="640" height="120" rx="8" fill="rgba(124, 106, 247, 0.05)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="340" y="45" fill="#7c6af7" font-size="14" font-weight="bold" text-anchor="middle">Hệ thống RAG / Agent Đang Chạy</text>
+
+            <rect x="40" y="60" width="120" height="40" rx="4" fill="#111" stroke="#c2c0b6" stroke-width="1"/>
+            <text x="100" y="85" fill="#e8e6e0" font-size="12" text-anchor="middle">User Query</text>
+
+            <path d="M 160 80 L 210 80" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <rect x="220" y="60" width="120" height="40" rx="4" fill="#111" stroke="#1D9E75" stroke-width="1"/>
+            <text x="280" y="85" fill="#1D9E75" font-size="12" text-anchor="middle">Retrieved Context</text>
+
+            <path d="M 340 80 L 390 80" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <rect x="400" y="60" width="120" height="40" rx="4" fill="#111" stroke="#EF9F27" stroke-width="1"/>
+            <text x="460" y="85" fill="#EF9F27" font-size="12" text-anchor="middle">LLM Generator</text>
+
+            <path d="M 520 80 L 570 80" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <rect x="580" y="60" width="60" height="40" rx="4" fill="rgba(216, 90, 48, 0.2)" stroke="#D85A30" stroke-width="1"/>
+            <text x="610" y="85" fill="#D85A30" font-size="12" text-anchor="middle">Output</text>
+
+            <!-- Tracing Layer (Middle) -->
+            <path d="M 100 100 L 100 170" fill="none" stroke="#1D9E75" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-teal)"/>
+            <path d="M 280 100 L 280 170" fill="none" stroke="#1D9E75" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-teal)"/>
+            <path d="M 460 100 L 460 170" fill="none" stroke="#1D9E75" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-teal)"/>
+
+            <rect x="80" y="180" width="400" height="60" rx="8" fill="rgba(29, 158, 117, 0.1)" stroke="#1D9E75" stroke-width="2"/>
+            <text x="280" y="205" fill="#1D9E75" font-size="14" font-weight="bold" text-anchor="middle">Tracing & Logging (LangSmith / Phoenix)</text>
+            <text x="280" y="225" fill="#c2c0b6" font-size="11" text-anchor="middle">Ghi lại toàn bộ Spans, Latency, Token Usage và Vectors</text>
+
+            <!-- LLM Judge (Bottom) -->
+            <path d="M 100 140 L 40 140 L 40 310 L 110 310" fill="none" stroke="#EF9F27" stroke-width="2" marker-end="url(#arrow-amber)"/>
+            <path d="M 280 140 L 280 270" fill="none" stroke="#EF9F27" stroke-width="2" marker-end="url(#arrow-amber)"/>
+            <path d="M 610 100 L 610 310 L 450 310" fill="none" stroke="#EF9F27" stroke-width="2" marker-end="url(#arrow-amber)"/>
+
+            <rect x="120" y="280" width="320" height="80" rx="8" fill="rgba(239, 159, 39, 0.1)" stroke="#EF9F27" stroke-width="2"/>
+            <text x="280" y="310" fill="#EF9F27" font-size="14" font-weight="bold" text-anchor="middle">LLM-as-a-Judge (RAGAS framework)</text>
+            <text x="280" y="330" fill="#c2c0b6" font-size="11" text-anchor="middle">Sử dụng GPT-4o để phân tích độ liên kết giữa Query, Context, Output</text>
+
+            <!-- Metrics Output -->
+            <path d="M 440 320 L 510 320" fill="none" stroke="#D85A30" stroke-width="3" marker-end="url(#arrow-gray)"/>
+            
+            <rect x="520" y="280" width="120" height="80" rx="6" fill="rgba(216, 90, 48, 0.15)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="580" y="305" fill="#e8e6e0" font-size="12" font-weight="bold" text-anchor="middle">CUE Metrics</text>
+            <text x="580" y="325" fill="#D85A30" font-size="11" text-anchor="middle">1. Faithfulness</text>
+            <text x="580" y="345" fill="#D85A30" font-size="11" text-anchor="middle">2. Answer Relevancy</text>
+
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Pipeline Evals tự động. Dữ liệu từ App được đẩy xuống hệ thống Tracing. Sau đó, Query, Context và Output được nạp vào LLM Judge để xuất ra các chỉ số định lượng.</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~15-18 phút)</h3>
+        <p>Hôm nay, hãy tự tay thử nghiệm cơ chế LLM-as-a-Judge trên ứng dụng RAG hoặc đoạn chat dài gần đây nhất của ông:</p>
+        <ol>
+            <li>Lấy ngẫu nhiên 3 cặp (Câu hỏi - Ngữ cảnh tài liệu - Câu trả lời) mà hệ thống của ông đã sinh ra.</li>
+            <li>Tạo một prompt hệ thống mới cho GPT-4 (hoặc Claude) với nội dung sau: <em>"Bạn là một giám khảo nghiêm khắc. Hãy đọc CÂU HỎI, NGỮ CẢNH và CÂU TRẢ LỜI bên dưới. Hãy chấm điểm từ 1 đến 5 cho tiêu chí 'Tính trung thực' (Câu trả lời phải hoàn toàn dựa trên Ngữ cảnh, không được tự suy diễn). Định dạng đầu ra: JSON chứa 'score' và 'reasoning'."</em></li>
+            <li>Nạp 3 cặp dữ liệu kia vào. Đọc phần 'reasoning' (lập luận) mà giám khảo AI trả về. Ông sẽ kinh ngạc khi thấy mô hình chỉ ra chính xác những chỗ bot của ông đang "ảo giác" hoặc mớm lời vô căn cứ.</li>
+        </ol>
+        <p>Khi ông tự động hóa được việc này thành một script chạy hàng loạt, ông đã chính thức thiết lập xong Evals Pipeline đầu tiên.</p>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Ai là người giám sát giám khảo? (Quis custodiet ipsos custodes?). Khi sử dụng LLM-as-a-judge (ví dụ GPT-4), làm sao ông biết được giám khảo AI này đang chấm điểm công tâm, và không mang theo "thiên vị nền tảng" (bias) ưu ái cho những câu trả lời có văn phong giống hệt phong cách của chính nhà cung cấp OpenAI?</p>
+        </div>
+        <div class="sources">
+            Nguồn tham khảo: Rút trích từ "Báo cáo nghiên cứu kỹ thuật: Tích hợp NVIDIA NIM với Graph RAG trong y tế" (Chi tiết về RAGAS, Arize Phoenix, LangSmith, và bộ chỉ số chống Accuracy Fallacy RAG-X CUE) cùng tài liệu so sánh "LLM Evaluation Tools".
+        </div>
+    </footer>
 </body>
 </html>

@@ -610,3 +610,227 @@ h1, h2, h3, h4, h5, h6 {
     gap: 1rem;
   }
 }
+
+/* ==========================================
+   Admin Panel Styles
+   ========================================== */
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.admin-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 40px -15px rgba(124, 106, 247, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-card.dashboard-card {
+  max-width: 680px;
+}
+
+.admin-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--accent-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-form-group label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.admin-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 10px var(--accent-purple-glow);
+  background: rgba(124, 106, 247, 0.03);
+}
+
+.admin-button {
+  background: var(--accent-purple);
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem 1.5rem;
+  color: #fff;
+  font-family: var(--font-title);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px var(--accent-purple-glow);
+}
+
+.admin-button:hover {
+  background: #624df5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--accent-purple-glow);
+}
+
+.admin-button:disabled {
+  background: rgba(124, 106, 247, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Upload Dropzone */
+.dropzone {
+  border: 2px dashed rgba(124, 106, 247, 0.3);
+  background: rgba(124, 106, 247, 0.02);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-secondary);
+}
+
+.dropzone:hover, .dropzone.active {
+  border-color: var(--accent-purple);
+  background: var(--accent-purple-dim);
+  color: var(--text-primary);
+}
+
+.dropzone-icon {
+  color: var(--accent-purple);
+  opacity: 0.8;
+  transition: transform 0.2s;
+}
+
+.dropzone:hover .dropzone-icon {
+  transform: translateY(-4px);
+  opacity: 1;
+}
+
+/* File Preview */
+.file-preview {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.file-preview-details {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-preview-icon {
+  color: var(--accent-teal);
+}
+
+.file-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.file-size {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.remove-file-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0.2rem;
+  display: flex;
+}
+
+.remove-file-btn:hover {
+  color: var(--accent-orange);
+}
+
+/* Console logs */
+.log-console {
+  background-color: #050508;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.log-entry {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.log-entry.info {
+  color: var(--text-secondary);
+}
+
+.log-entry.success {
+  color: var(--accent-teal);
+}
+
+.log-entry.error {
+  color: var(--accent-orange);
+}
+
+.log-entry.warn {
+  color: var(--accent-amber);
+}
+
+.log-time {
+  color: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
