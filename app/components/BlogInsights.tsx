@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface Article {
   id: string;
@@ -209,52 +210,56 @@ const BlogInsights = () => {
 
       {/* Featured Card */}
       <article className="featured-card-wrapper">
-        <div className="featured-card card-glow">
-          <div
-            className="featured-image"
-            style={{ backgroundImage: `url('${featuredArticle.image}')` }}
-          />
-          <div className="featured-content">
-            <div className="featured-meta">
-              <span className="featured-badge">Featured</span>
-              <span className="read-time">{featuredArticle.readTime} min read</span>
-            </div>
-            <h2 className="featured-title">{featuredArticle.title}</h2>
-            <p className="featured-excerpt">{featuredArticle.excerpt}</p>
-            <div className="reading-progress-track">
-              <div className="reading-progress-fill" style={{ width: '100%' }} />
+        <Link href="/blog/featured" className="featured-card-link">
+          <div className="featured-card card-glow">
+            <div
+              className="featured-image"
+              style={{ backgroundImage: `url('${featuredArticle.image}')` }}
+            />
+            <div className="featured-content">
+              <div className="featured-meta">
+                <span className="featured-badge">Featured</span>
+                <span className="read-time">{featuredArticle.readTime} min read</span>
+              </div>
+              <h2 className="featured-title">{featuredArticle.title}</h2>
+              <p className="featured-excerpt">{featuredArticle.excerpt}</p>
+              <div className="reading-progress-track">
+                <div className="reading-progress-fill" style={{ width: '100%' }} />
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       </article>
 
       {/* Articles Grid */}
       <div className="articles-grid">
         {articles.map((article, index) => (
           <article key={article.id} className="article-card-wrapper">
-            <div className="article-card card-glow">
-              <div className="article-layout">
-                <div
-                  className="article-image"
-                  style={{ backgroundImage: `url('${article.image}')` }}
-                />
-                <div className="article-content">
-                  <div className="article-meta">
-                    <span className="day-badge">Day {index + 1}</span>
-                    <span className="meta-dot">•</span>
-                    <span className="read-time">{article.readTime} min read</span>
-                  </div>
-                  <h3 className="article-title">{article.title}</h3>
-                  <p className="article-excerpt">{article.excerpt}</p>
-                  <div className="reading-progress-track" style={{ maxWidth: '120px' }}>
-                    <div
-                      className="reading-progress-fill"
-                      style={{ width: `${Math.max(15, 45 - index * 15)}%` }}
-                    />
+            <Link href={`/blog/${article.id}`} className="article-card-link">
+              <div className="article-card card-glow">
+                <div className="article-layout">
+                  <div
+                    className="article-image"
+                    style={{ backgroundImage: `url('${article.image}')` }}
+                  />
+                  <div className="article-content">
+                    <div className="article-meta">
+                      <span className="day-badge">Day {index + 1}</span>
+                      <span className="meta-dot">•</span>
+                      <span className="read-time">{article.readTime} min read</span>
+                    </div>
+                    <h3 className="article-title">{article.title}</h3>
+                    <p className="article-excerpt">{article.excerpt}</p>
+                    <div className="reading-progress-track" style={{ maxWidth: '120px' }}>
+                      <div
+                        className="reading-progress-fill"
+                        style={{ width: `${Math.max(15, 45 - index * 15)}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </article>
         ))}
       </div>
@@ -406,7 +411,21 @@ const BlogInsights = () => {
         }
 
         .featured-card-wrapper {
-          margin-bottom: 2.5rem;
+          margin-bottom: 4rem;
+        }
+
+        .featured-card-link {
+          text-decoration: none;
+          display: block;
+          cursor: pointer;
+        }
+
+        .featured-card {
+          background: var(--surface-container-low);
+          border: 1px solid rgba(71, 69, 84, 0.3);
+          border-radius: 0.75rem;
+          overflow: hidden;
+          transition: all 0.5s ease;
         }
 
         .featured-card {
@@ -496,7 +515,21 @@ const BlogInsights = () => {
         }
 
         .article-card-wrapper {
-          width: 100%;
+          flex: 1;
+        }
+
+        .article-card-link {
+          text-decoration: none;
+          display: block;
+          cursor: pointer;
+        }
+
+        .article-card {
+          background: var(--surface-container-low);
+          border: 1px solid rgba(71, 69, 84, 0.3);
+          border-radius: 0.75rem;
+          overflow: hidden;
+          transition: all 0.3s ease;
         }
 
         .article-card {
