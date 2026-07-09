@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 1: Giải Phẫu Bộ Nhớ Agent — Context Engineering Không Chỉ Là Prompt</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #c2c0b6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Tư, 01/07/2026</span>
+        <h1>Day 1: Giải Phẫu Bộ Nhớ Agent — Context Engineering Không Chỉ Là Prompt</h1>
+        <div class="tags">#ContextEngineering #AIAgents #LLMOps #SystemDesign</div>
+    </header>
+
+    <main>
+        <p>Chào ông, hôm nay chúng ta bắt đầu ngày 1 trong lộ trình chinh phục kỹ năng của một AI Engineer thực thụ. Mọi người thường nghĩ làm AI chỉ đơn giản là gọi API và viết vài dòng lệnh (prompt). Nhưng nếu chỉ dựa vào prompt, hệ thống sẽ gãy vụn khi chạy thực tế (production). Bí mật lớn nhất ngăn cách giữa một bản demo giật cục và một hệ thống Agent tự động đáng tin cậy nằm ở <strong>Context Engineering</strong> (Kỹ thuật Ngữ cảnh).</p>
+
+        <p>Để hiểu rõ điều này, ông cần gạt bỏ tư duy "nhập câu hỏi - xuất câu trả lời" truyền thống. Dưới góc độ của một Software Engineer, hãy hình dung Large Language Model (LLM) như một hệ điều hành: Mô hình AI là CPU xử lý, còn Cửa sổ Ngữ cảnh (Context Window) chính là <strong>bộ nhớ RAM</strong> của nó.</p>
+
+        <p>Khi ông xây dựng một AI Agent chạy vòng lặp 20 bước tự động, nó không chỉ đọc mỗi câu hỏi. Nó nhồi nhét đến 7 loại dữ liệu khác nhau vào thanh RAM này: System prompt (định dạng, vai trò), định nghĩa các công cụ (tools), kết quả trả về từ tool (thường là một cục dữ liệu dài ngoằng), dữ liệu truy xuất từ RAG, lịch sử hội thoại, bộ nhớ hệ thống, và trạng thái (state) hiện tại của Agent.</p>
+
+        <h2>Nút Thắt Cổ Chai Của RAM & 4 Căn Bệnh Hệ Thống</h2>
+        <p>Điều gì xảy ra khi ông mở quá nhiều tab trên trình duyệt? RAM đầy và máy tính bị treo. LLM cũng hoàn toàn tương tự. Một nghiên cứu trên 18 mô hình AI hàng đầu chỉ ra rằng hiệu năng suy luận giảm liên tục khi độ dài ngữ cảnh tăng lên — hiện tượng này gọi là "Context Drop". Tệ hơn, mô hình mắc phải chứng <span class="highlight">Lost in the Middle</span> (Mất thông tin ở giữa): nó nhớ rất tốt đoạn đầu và đoạn cuối, nhưng quên sạch thông tin cốt lõi nằm kẹp ở giữa, làm độ chính xác giảm tới hơn 30%.</p>
+        
+        <p>Nếu không có kỹ thuật quản lý luồng dữ liệu, thanh RAM này sẽ bị quá tải, dẫn đến 4 lỗi sinh tử (Failure Modes) trong thực tế:</p>
+        <ul>
+            <li><strong>Context Poisoning (Nhiễm độc):</strong> Một tool trả về dữ liệu sai ở bước 3, Agent lập tức lưu vào RAM và vin vào cái sai đó để suy luận lệch lạc cho 15 bước tiếp theo.</li>
+            <li><strong>Context Distraction (Mất tập trung):</strong> Context quá dài khiến mô hình lười suy luận logic, thay vào đó nó bắt đầu nhại lại các mẫu câu vừa thấy trong lịch sử thay vì giải quyết vấn đề.</li>
+            <li><strong>Context Confusion (Loạn công cụ):</strong> Nhồi 46 định nghĩa tool vào prompt khiến model bối rối và gọi hàm lung tung. Thực tế, khi giảm xuống còn những tool thật sự cần thiết, mô hình lại hoạt động chính xác.</li>
+            <li><strong>Context Clash (Xung đột):</strong> Prompt hệ thống bảo một đằng, tài liệu RAG bị nhồi vào lại bảo một nẻo khiến model bị mâu thuẫn.</li>
+        </ul>
+
+        <h2>Giải Pháp: Khung Kiến Trúc WRCI</h2>
+        <p>Để hệ thống không sập, ông phải xây dựng một "Đường ống lắp ráp ngữ cảnh" (Context Assembly Pipeline) theo khung <strong>WRCI (Write, Select, Compress, Isolate)</strong>:</p>
+
+        <p><strong>1. Write (Ghi ra ngoài):</strong> Đừng ép Agent nhớ mọi thứ trên RAM. Hãy lập trình cho nó một công cụ "Scratchpad" (nháp) để tự ghi lại kế hoạch, hoặc lưu trạng thái ra ổ cứng (ví dụ file <code>progress.md</code>). Dữ liệu tĩnh như quy ước dự án thì nên lưu trong file <code>agents.md</code> và chỉ nạp lên lúc khởi động.</p>
+
+        <p><strong>2. Select (Lọc động):</strong> Tuyệt đối không ném toàn bộ định nghĩa API tools vào System Prompt mặc định. Hãy áp dụng kiến trúc <em>RAG MCP</em>: Dùng vector search dựa trên ý định hiện tại của người dùng, kéo ra đúng 3-4 công cụ liên quan nhất và chỉ nạp chúng vào RAM. Phương pháp này giúp tăng độ chính xác chọn tool lên gấp 3 lần và giảm 50% chi phí token.</p>
+
+        <p><strong>3. Compress (Nén chủ động):</strong> Dọn rác liên tục. Nếu Agent vừa cào một trang web chứa 10,000 token mã HTML, đừng để nó ám mãi trong lịch sử. Ngay sau khi đọc xong, hãy kích hoạt một hàm nén: xóa sạch mã HTML đó khỏi context, chỉ để lại 1 câu tóm tắt insight thu được. Thậm chí Claude Code còn có cơ chế tự động nén (auto-comp) khi ngữ cảnh đạt 95% sức chứa.</p>
+
+        <p><strong>4. Isolate (Cách ly môi trường):</strong> Đây là kiến trúc cốt lõi của Multi-Agent. Đừng bắt Agent chính phải đọc một đống log lỗi hỗn độn. Hãy tạo một Sub-agent (tác tử phụ) với một thanh RAM hoàn toàn trống, chuyên tâm đọc mớ log đó, và trả về một Artifact (bản tóm tắt nguyên nhân sạch sẽ) cho Agent chính.</p>
+
+        <p>Cuối cùng, dưới góc độ kinh tế, quản lý Context tốt liên quan trực tiếp đến <strong>KV Cache</strong>. Các nhà cung cấp tính phí token chưa cache cực đắt. Bí quyết là: Luôn giữ nội dung tĩnh (System prompt, Tool definitions) ở phần ĐẦU của context window, và nội dung động (lịch sử chat, bước suy luận) ở phần ĐUÔI. Nếu ông xáo trộn thứ tự các tool ngẫu nhiên, toàn bộ cache sẽ bị vô hiệu hóa và ông sẽ phải trả tiền tính toán lại từ đầu.</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 400" width="100%">
+            <defs>
+                <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c2c0b6"/>
+                </marker>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c6af7"/>
+                </marker>
+            </defs>
+
+            <!-- Raw Data Inputs (Bloated RAM sources) -->
+            <rect x="20" y="40" width="160" height="45" rx="6" fill="rgba(216,90,48,0.15)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="100" y="62" fill="#e8e6e0" font-size="13" font-weight="500" text-anchor="middle">40+ Tool Definitions</text>
+            <text x="100" y="78" fill="#D85A30" font-size="11" text-anchor="middle">(Gây Context Confusion)</text>
+
+            <rect x="20" y="110" width="160" height="45" rx="6" fill="rgba(216,90,48,0.15)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="100" y="132" fill="#e8e6e0" font-size="13" font-weight="500" text-anchor="middle">Dữ liệu RAG thô</text>
+            <text x="100" y="148" fill="#D85A30" font-size="11" text-anchor="middle">(Gây Context Clash)</text>
+
+            <rect x="20" y="180" width="160" height="45" rx="6" fill="rgba(216,90,48,0.15)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="100" y="202" fill="#e8e6e0" font-size="13" font-weight="500" text-anchor="middle">Lịch sử Agent & Lỗi</text>
+            <text x="100" y="218" fill="#D85A30" font-size="11" text-anchor="middle">(Gây Context Poisoning)</text>
+
+            <!-- Connections to Context Engine -->
+            <path d="M 180 62 L 210 62 L 210 132 L 250 132" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            <path d="M 180 132 L 250 132" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            <path d="M 180 202 L 210 202 L 210 132 L 250 132" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <!-- Context Assembly Pipeline (WRCI) Block -->
+            <rect x="260" y="20" width="200" height="260" rx="8" fill="rgba(29,158,117,0.05)" stroke="#1D9E75" stroke-width="2" stroke-dasharray="5"/>
+            <text x="360" y="45" fill="#1D9E75" font-size="14" font-weight="bold" text-anchor="middle">Context Assembly Pipeline</text>
+
+            <rect x="280" y="70" width="160" height="40" rx="4" fill="#111" stroke="#1D9E75" stroke-width="1"/>
+            <text x="360" y="90" fill="#e8e6e0" font-size="12" font-weight="500" text-anchor="middle">1. SELECT</text>
+            <text x="360" y="105" fill="#c2c0b6" font-size="10" text-anchor="middle">Lọc Top 3 Tools (RAG MCP)</text>
+
+            <rect x="280" y="125" width="160" height="40" rx="4" fill="#111" stroke="#EF9F27" stroke-width="1"/>
+            <text x="360" y="145" fill="#e8e6e0" font-size="12" font-weight="500" text-anchor="middle">2. COMPRESS</text>
+            <text x="360" y="160" fill="#c2c0b6" font-size="10" text-anchor="middle">Tóm tắt lịch sử & dọn rác</text>
+
+            <rect x="280" y="180" width="160" height="40" rx="4" fill="#111" stroke="#7c6af7" stroke-width="1"/>
+            <text x="360" y="200" fill="#e8e6e0" font-size="12" font-weight="500" text-anchor="middle">3. ISOLATE</text>
+            <text x="360" y="215" fill="#c2c0b6" font-size="10" text-anchor="middle">Giao việc cho Sub-Agents</text>
+
+            <rect x="280" y="235" width="160" height="30" rx="4" fill="#111" stroke="#c2c0b6" stroke-width="1"/>
+            <text x="360" y="254" fill="#e8e6e0" font-size="12" font-weight="500" text-anchor="middle">4. WRITE (External DB)</text>
+
+            <!-- Connection to LLM RAM -->
+            <path d="M 460 140 L 510 140" fill="none" stroke="#7c6af7" stroke-width="3" marker-end="url(#arrow-purple)"/>
+
+            <!-- Optimized LLM RAM -->
+            <rect x="520" y="40" width="140" height="200" rx="8" fill="rgba(124,106,247,0.15)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="590" y="70" fill="#7c6af7" font-size="15" font-weight="bold" text-anchor="middle">LLM RAM</text>
+            <text x="590" y="90" fill="#e8e6e0" font-size="12" text-anchor="middle">(Engineered Context)</text>
+            
+            <!-- KV Cache Structure inside RAM -->
+            <rect x="530" y="110" width="120" height="50" rx="4" fill="rgba(124,106,247,0.3)"/>
+            <text x="590" y="130" fill="#e8e6e0" font-size="11" font-weight="500" text-anchor="middle">Static Prompt & Tools</text>
+            <text x="590" y="145" fill="#EF9F27" font-size="10" font-weight="500" text-anchor="middle">KV Cache Hit (Rẻ, Nhanh)</text>
+
+            <rect x="530" y="170" width="120" height="50" rx="4" fill="rgba(124,106,247,0.05)" stroke="#7c6af7" stroke-dasharray="2"/>
+            <text x="590" y="190" fill="#e8e6e0" font-size="11" font-weight="500" text-anchor="middle">Dynamic State (Artifacts)</text>
+            <text x="590" y="205" fill="#c2c0b6" font-size="10" text-anchor="middle">Ngắn gọn, sạch sẽ</text>
+
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Khung kiến trúc WRCI — Cách chuyển hóa mớ dữ liệu thô hỗn loạn thành một cấu trúc ngữ cảnh tối ưu để nạp vào RAM của LLM, giúp duy trì hiệu năng và tận dụng KV Cache.</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~15-18 phút)</h3>
+        <p>Chỉ đọc lý thuyết sẽ không tạo ra sự khác biệt. Hãy mở ngay một Project AI hoặc một luồng System Prompt dài nhất mà ông đang xây dựng và thực hiện 2 việc sau:</p>
+        <ul>
+            <li><strong>Thực hành Select:</strong> Nhìn vào danh sách công cụ (Tools) mà ông đang định nghĩa cho model. Lấy 50% các công cụ ít dùng nhất ra khỏi prompt mặc định. Hãy viết một đoạn code Python dùng vector search (như Cosine Similarity) để chỉ kéo các công cụ này vào prompt khi câu hỏi của user thực sự khớp với ngữ nghĩa của chúng.</li>
+            <li><strong>Thực hành Compress:</strong> Nếu hệ thống có lưu mảng lịch sử hội thoại (chat history), hãy chèn thêm một cơ chế background: Khi mảng <code>messages</code> vượt quá 10 tin nhắn, tự động gửi 8 tin cũ nhất cho một model nhỏ, rẻ tiền (ví dụ Claude 3.5 Haiku) để tóm tắt thành 3 gạch đầu dòng, sau đó nối với 2 tin nhắn mới nhất.</li>
+        </ul>
+        <p>Sau khi triển khai, hãy kiểm tra lại log xem ông đã giảm được bao nhiêu phần trăm token dư thừa cho mỗi request.</p>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Trong hệ thống Agent ông đang phát triển, phần thông tin nào bắt buộc phải nằm ở khối "Static" (tĩnh) để tận dụng KV Cache, và phần thông tin nào là "Rác" cần phải dọn dẹp liên tục để tránh hiện tượng Context Poisoning làm giảm trí thông minh của model?</p>
+        </div>
+        <div class="sources">
+            Nguồn tài liệu: Trích xuất từ "Context Engineering in 29 Minutes: Complete Course" và "5 Skills That'll Make You a $300K AI Engineer in 2026".
+        </div>
+    </footer>
+</body>
+</html>

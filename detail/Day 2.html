@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2: GraphRAG — Cứu Tinh Của Bài Toán Suy Luận Nhiều Bước</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0.5rem 0;
+            line-height: 1.3;
+        }
+        h2 {
+            color: #7c6af7;
+            font-weight: 500;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+        }
+        h3 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        p {
+            margin-bottom: 1.2rem;
+        }
+        ul {
+            margin-bottom: 1.2rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        .highlight {
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1rem;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124, 106, 247, 0.08), rgba(15, 15, 15, 1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin-top: 0;
+            color: #7c6af7;
+        }
+        footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            background: rgba(29, 158, 117, 0.05);
+            border-left: 4px solid #1D9E75;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+        }
+        .question-box h3 {
+            margin-top: 0;
+            color: #1D9E75;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        code {
+            background-color: #1a1a1a;
+            color: #D85A30;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="date">Thứ Năm, 09/07/2026</div>
+        <h1>Day 2: GraphRAG — Cứu Tinh Của Bài Toán Suy Luận Nhiều Bước</h1>
+        <div class="tags">#GraphRAG #KnowledgeGraph #LLMOps #SystemDesign</div>
+    </header>
+
+    <main>
+        <p>Chào ông, tiếp tục ngày thứ 2 trong lộ trình. Hôm qua chúng ta đã xử lý phần bộ nhớ (Context Engineering) để giúp LLM không bị "ngáo" khi nhồi quá nhiều rác. Hôm nay, chúng ta sẽ giải quyết một lỗ hổng chí mạng của kiến trúc RAG cơ bản: <strong>Khả năng suy luận nhiều bước (Multi-hop reasoning) và tính minh bạch</strong>.</p>
+
+        <p>Nếu ông đang dùng Vector Database (như Pinecone hay Qdrant) cho dự án RAG, cơ chế hoạt động thực chất rất ngây ngô: Nó băm văn bản thành các đoạn (chunks), biến thành chuỗi số (vectors), và khi user đặt câu hỏi, nó tìm các đoạn text có <em>khoảng cách toán học</em> gần nhất.</p>
+
+        <p>Điều này hoạt động ổn nếu câu hỏi đơn giản kiểu "Quy định đổi trả là gì?". Nhưng trong thực tế production, user sẽ hỏi những câu phức tạp yêu cầu tổng hợp thông tin, ví dụ: <em>"Bệnh nhân X đang dùng thuốc Ibudilast, liệu có hiệu quả với bệnh Đa xơ cứng (Multiple Sclerosis) không?"</em>.</p>
+
+        <p>Một hệ thống Vector RAG thuần túy sẽ thất bại thảm hại ở đây. Tại sao? Vì rất có thể không có một đoạn text duy nhất nào chứa cả "Ibudilast" và "Multiple Sclerosis" cạnh nhau. Thuật toán vector sẽ lấy về những đoạn text rời rạc, thiếu đi sợi dây liên kết logic, dẫn đến việc LLM thiếu thông tin và trả lời sai, hoặc tệ hơn là rơi vào trạng thái <strong>Accuracy Fallacy (Sai lầm độ chính xác)</strong> — nghĩa là LLM vô tình trả lời đúng do nó đã "học lỏm" từ dữ liệu huấn luyện khổng lồ của nó, chứ không hề dựa trên tài liệu ông cung cấp,. Khi làm việc ở cấp độ enterprise (đặc biệt trong y tế hay tài chính), ông không thể để hệ thống "đoán mò" (Lucky Guess) như vậy được.</p>
+
+        <h2>GraphRAG: Ánh sáng cuối đường hầm</h2>
+        <p>Để giải quyết giới hạn này, <strong>GraphRAG (Retrieval-Augmented Generation dựa trên Đồ thị)</strong> ra đời,. Thay vì lưu trữ các đoạn text mù mờ, GraphRAG sử dụng LLM ở bước tiền xử lý (Ingestion) để đọc tài liệu và trích xuất ra các <strong>Thực thể (Entities)</strong> và <strong>Mối quan hệ (Relationships)</strong>, sau đó lưu chúng vào một Cơ sở dữ liệu Đồ thị (Knowledge Graph) như Neo4j.</p>
+
+        <p>Kiến trúc này chuyển đổi dữ liệu phi cấu trúc thành các bộ ba (triples) dạng <code>(Node A) -> [Mối quan hệ] -> (Node B)</code>,. Khi user hỏi về thuốc Ibudilast, hệ thống truy xuất sẽ không tìm kiếm text mù quáng nữa. Nó tìm Node [Ibudilast], sau đó đi dọc theo các cạnh (edges) trong đồ thị: [Ibudilast] &rarr; thuộc nhóm &rarr; [CTRP Terminology] &rarr; liên quan đến &rarr; [Multiple Sclerosis].</p>
+
+        <p>Dưới góc độ của một AI Engineer, ông sẽ triển khai pipeline này qua 3 bước cốt lõi:</p>
+
+        <ul>
+            <li><strong>1. Xây dựng Đồ thị (Knowledge Graph Construction):</strong> Đây là bước tốn kém nhất. Ông phải chạy một LLM (như GPT-4o-mini) trên toàn bộ kho tài liệu thô. Prompt LLM yêu cầu nó nhận diện các thực thể quan trọng và mối quan hệ giữa chúng, sau đó lưu vào Neo4j,.</li>
+            <li><strong>2. Truy xuất Lai (Hybrid Retrieval):</strong> Đừng vứt bỏ Vector Search. Cách thông minh nhất là kết hợp cả hai. Khi có câu hỏi, hệ thống sẽ dùng Vector Search để tìm <em>các Node khởi điểm (Starting points)</em> khớp với ngữ nghĩa câu hỏi nhất. Từ các Node này, ông viết mã (hoặc dùng Cypher query) để "mở rộng" ra 2-3 độ sâu (hops) xung quanh để thu thập thông tin họ hàng của Node đó-,.</li>
+            <li><strong>3. Trình bày Ngữ cảnh (Augmentation):</strong> Chuyển cụm đồ thị vừa lấy được thành văn bản có cấu trúc rõ ràng (ví dụ: danh sách các sự kiện logic) và đưa vào Prompt cho LLM sinh câu trả lời,.</li>
+        </ul>
+
+        <h2>Tại sao Kỹ sư AI giỏi phải làm chủ GraphRAG?</h2>
+        <p>Khác biệt giữa kỹ sư học việc và kỹ sư 300.000 USD nằm ở chỗ ông có thể đảm bảo <strong>Tính minh bạch (Explainability)</strong> cho khách hàng doanh nghiệp hay không. Vector Search là một chiếc "hộp đen" (black-box) — ông không thể giải thích tại sao hai vector lại gần nhau một cách rõ ràng.</p>
+        
+        <p>Với GraphRAG, nếu LLM đưa ra kết luận, ông hoàn toàn có thể in ra chuỗi logic (đường đi trong đồ thị) để chứng minh cho người dùng thấy: <em>"Hệ thống đưa ra kết luận này vì nó đi từ Node A sang Node B qua quy định C"</em>. Điều này là bắt buộc trong các ứng dụng tuân thủ pháp lý, kiểm toán, và chăm sóc sức khỏe,. Ngoài ra, nó giải quyết triệt để bài toán tổng hợp (Aggregation) — ví dụ: đếm xem có bao nhiêu Node [Lỗi hệ thống] nối với Node [Dự án X] — việc mà Vector RAG hoàn toàn bó tay.</p>
+        
+        <p>Tóm lại, nếu Vector Database là bộ não "cảm nhận" bằng trực giác, thì Knowledge Graph là bộ não "suy luận" bằng logic toán học. Ghép hai thứ này lại, ông sẽ có một hệ thống RAG cấp độ production.</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" width="100%">
+            <!-- Definitions for markers and filters -->
+            <defs>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c6af7"/>
+                </marker>
+                <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c2c0b6"/>
+                </marker>
+            </defs>
+
+            <!-- Step 1: Ingestion (Left) -->
+            <rect x="20" y="50" width="140" height="70" rx="8" fill="rgba(216, 90, 48, 0.1)" stroke="#D85A30" stroke-width="2"/>
+            <text x="90" y="80" fill="#e8e6e0" font-size="14" font-weight="500" text-anchor="middle">Tài liệu thô</text>
+            <text x="90" y="100" fill="#c2c0b6" font-size="11" text-anchor="middle">(Phi cấu trúc)</text>
+
+            <path d="M 90 120 L 90 160" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            <text x="135" y="145" fill="#EF9F27" font-size="11" text-anchor="middle">LLM Extract</text>
+
+            <rect x="20" y="170" width="140" height="70" rx="8" fill="rgba(239, 159, 39, 0.1)" stroke="#EF9F27" stroke-width="2"/>
+            <text x="90" y="200" fill="#e8e6e0" font-size="14" font-weight="500" text-anchor="middle">Nodes & Edges</text>
+            <text x="90" y="220" fill="#c2c0b6" font-size="11" text-anchor="middle">(Cấu trúc hóa)</text>
+
+            <path d="M 160 205 L 210 205" fill="none" stroke="#1D9E75" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+            <!-- Step 2: Knowledge Graph DB (Center) -->
+            <rect x="220" y="30" width="240" height="260" rx="12" fill="rgba(29, 158, 117, 0.05)" stroke="#1D9E75" stroke-width="2" stroke-dasharray="4"/>
+            <text x="340" y="60" fill="#1D9E75" font-size="16" font-weight="500" text-anchor="middle">Neo4j Knowledge Graph</text>
+
+            <!-- Graph Nodes -->
+            <circle cx="280" cy="120" r="25" fill="rgba(124, 106, 247, 0.2)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="280" y="124" fill="#e8e6e0" font-size="11" text-anchor="middle">Thuốc A</text>
+
+            <circle cx="400" cy="120" r="25" fill="rgba(124, 106, 247, 0.2)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="400" y="124" fill="#e8e6e0" font-size="11" text-anchor="middle">Bệnh Y</text>
+
+            <circle cx="340" cy="220" r="25" fill="rgba(216, 90, 48, 0.2)" stroke="#D85A30" stroke-width="2"/>
+            <text x="340" y="224" fill="#e8e6e0" font-size="11" text-anchor="middle">Triệu chứng Z</text>
+
+            <!-- Graph Edges -->
+            <path d="M 305 120 L 375 120" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            <text x="340" y="110" fill="#c2c0b6" font-size="10" text-anchor="middle">[Không hiệu quả]</text>
+
+            <path d="M 295 140 L 325 200" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            <text x="295" y="180" fill="#c2c0b6" font-size="10" text-anchor="middle" transform="rotate(-63 295 180)">[Gây ra]</text>
+
+            <path d="M 385 140 L 355 200" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            <text x="385" y="180" fill="#c2c0b6" font-size="10" text-anchor="middle" transform="rotate(63 385 180)">[Đặc trưng của]</text>
+
+            <!-- Vector Search Entry -->
+            <path d="M 400 45 L 400 90" fill="none" stroke="#1D9E75" stroke-width="2" stroke-dasharray="2" marker-end="url(#arrow-teal)"/>
+            <text x="400" y="35" fill="#1D9E75" font-size="11" text-anchor="middle">Vector Search &rarr; Entry Node</text>
+
+            <!-- Step 3: Retrieval & Generation (Right) -->
+            <path d="M 460 160 L 510 160" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-purple)"/>
+            <text x="485" y="150" fill="#7c6af7" font-size="11" text-anchor="middle">Traversal</text>
+
+            <rect x="520" y="90" width="140" height="140" rx="8" fill="rgba(124, 106, 247, 0.1)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="590" y="130" fill="#e8e6e0" font-size="15" font-weight="500" text-anchor="middle">LLM Generator</text>
+            <text x="590" y="160" fill="#c2c0b6" font-size="11" text-anchor="middle">Prompt Augmentation</text>
+            <rect x="535" y="180" width="110" height="30" rx="4" fill="#1D9E75"/>
+            <text x="590" y="199" fill="#0f0f0f" font-size="12" font-weight="bold" text-anchor="middle">Câu trả lời chuẩn</text>
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Pipeline GraphRAG. LLM biến tài liệu thành các Node/Edge (Trái). Khi Query, Vector search tìm Entry Node, sau đó Graph Traversal đi dọc các cạnh để kéo toàn bộ ngữ cảnh logic (Giữa) để cấp cho LLM sinh câu trả lời minh bạch (Phải).</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~15-18 phút)</h3>
+        <p>Hôm nay chúng ta sẽ không cài đặt Neo4j vì nó khá cồng kềnh. Hãy mở code Python của ông lên và thử giả lập logic "Graph Extraction" bằng tay để hiểu cơ chế cốt lõi:</p>
+        <ol>
+            <li>Tạo một file Python mới. Viết một hàm chứa prompt yêu cầu LLM (dùng API OpenAI/Claude) đọc một đoạn tài liệu nghiệp vụ của công ty ông (khoảng 2-3 đoạn văn).</li>
+            <li><strong>Instruction Prompt:</strong> <em>"Hãy đọc đoạn văn sau và trích xuất thông tin dưới định dạng mảng JSON các bộ ba (triples): <code>[{"head": "Thực thể 1", "relation": "Mối quan hệ", "tail": "Thực thể 2"}]</code>. Chỉ lấy các danh từ cốt lõi."</em></li>
+            <li>In mảng JSON đó ra màn hình. Ông sẽ thấy tài liệu phi cấu trúc biến thành một đồ thị dạng text.</li>
+            <li>Hãy tưởng tượng nếu user hỏi về "Thực thể 1", ông chỉ cần filter mảng JSON này để lấy tất cả các <code>tail</code> có liên quan. Việc này định tuyến luồng suy luận chính xác hơn rất nhiều so với việc quăng nguyên đoạn văn gốc bắt LLM tự mò mẫm.</li>
+        </ol>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Việc gọi API LLM để trích xuất Entity và Relationship cho một kho chứa hàng triệu tài liệu (Ingestion phase) sẽ ngốn một lượng tiền token khổng lồ. Với tư cách là Kiến trúc sư hệ thống, ông sẽ thiết kế chiến lược Ingestion như thế nào (kết hợp các mô hình NLP cục bộ nhỏ, SLMs, hay kỹ thuật chunking đặc thù) để giảm thiểu chi phí này mà vẫn giữ được chất lượng của Knowledge Graph?</p>
+        </div>
+        <div class="sources">
+            <strong>Nguồn tài liệu:</strong> Dựa trên "What is GraphRAG? - Neo4j", "RAG tutorial: How to build a RAG system on a knowledge graph", và nghiên cứu "RAG-X: Systematic Diagnosis of Retrieval-Augmented Generation" về Accuracy Fallacy.
+        </div>
+    </footer>
+</body>
+</html>
