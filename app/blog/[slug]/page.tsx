@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSortedPostsData, getPostData, getNextPost, getPreviousPost } from '@/lib/posts';
 import MermaidRenderer from '@/app/components/MermaidRenderer';
+import PrintButton from '@/app/components/PrintButton';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -92,6 +93,104 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         }
         .material-symbols-outlined {
           font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        @media print {
+          /* Color & Ink optimizations */
+          body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+          }
+          .article-container, .article-content, h1, h2, h3, h4, h5, h6, p, li, span, code, pre, strong, em, b, i {
+            color: #000000 !important;
+            text-shadow: none !important;
+            box-shadow: none !important;
+          }
+          .glass-panel, .article-content code {
+            background: transparent !important;
+            box-shadow: none !important;
+            border-color: #333333 !important;
+          }
+
+          /* Paper size and margin */
+          @page {
+            margin: 1cm !important;
+            size: A4 !important;
+          }
+          
+          /* Layout adjustments for saving paper */
+          main {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+          }
+          .article-container {
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          .mb-12, .mb-20, .mb-24 {
+            margin-bottom: 12px !important;
+          }
+          h1, h2, h3, p, ul, ol, li {
+            margin-top: 6px !important;
+            margin-bottom: 6px !important;
+            line-height: 1.35 !important;
+            font-size: 10pt !important;
+          }
+          h1 {
+            font-size: 16pt !important;
+            margin-bottom: 10px !important;
+          }
+          h2 {
+            font-size: 12pt !important;
+            border-left: 3px solid #000000 !important;
+            padding-left: 8px !important;
+            margin-top: 16px !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+          }
+          h3 {
+            font-size: 11pt !important;
+            margin-top: 12px !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+          }
+          
+          /* Graphic scale limits */
+          img, svg, .mermaid-svg-container {
+            max-height: 220px !important;
+            width: auto !important;
+            margin: 8px auto !important;
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          
+          /* SVG colors for print */
+          svg *, svg path, svg rect, svg circle, svg line, svg polygon {
+            stroke: #000000 !important;
+            fill: none !important;
+          }
+          svg text {
+            fill: #000000 !important;
+            stroke: none !important;
+          }
+
+          /* Code blocks and navigation break avoidance */
+          pre, code, table, blockquote, .article-content pre {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            background: rgba(0, 0, 0, 0.03) !important;
+            border: 1px solid #dddddd !important;
+            color: #000000 !important;
+          }
+
+          /* Hide UI interactive elements */
+          header, footer, nav, aside, .print-btn, .reading-progress-container, section.grid {
+            display: none !important;
+          }
         }
       `}</style>
 
@@ -251,6 +350,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           el.addEventListener('mouseleave', () => el.classList.remove('scale-95'));
         });
       `}</script>
+
+      <PrintButton />
     </>
   );
 }
