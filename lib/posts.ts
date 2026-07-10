@@ -12,6 +12,7 @@ export interface PostData {
   excerpt: string;
   contentHtml: string;
   fileType: 'html' | 'md';
+  readTime: number;
 }
 
 const postsDirectory = path.join(process.cwd(), 'detail');
@@ -203,6 +204,11 @@ export function getSortedPostsData(): PostData[] {
         excerpt = plainText.substring(0, 160).trim() + '...';
       }
 
+      // Calculate read time dynamically (average 200 words per minute)
+      const plainText = contentHtml.replace(/<[^>]*>/g, ' ');
+      const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
+      const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
       return {
         slug,
         title,
@@ -212,6 +218,7 @@ export function getSortedPostsData(): PostData[] {
         excerpt,
         contentHtml,
         fileType,
+        readTime,
       };
     });
 
@@ -223,4 +230,18 @@ export function getPostData(slug: string): PostData | null {
   const posts = getSortedPostsData();
   const post = posts.find((p) => p.slug === slug);
   return post || null;
+}
+
+export function getNextPost(slug: string): PostData | null {
+  const posts = getSortedPostsData();
+  const index = posts.findIndex((p) => p.slug === slug);
+  if (index === -1 || index === 0) return null; // In descending sort order, the newer post is at index - 1
+  return posts[index - 1];
+}
+
+export function getPreviousPost(slug: string): PostData | null {
+  const posts = getSortedPostsData();
+  const index = posts.findIndex((p) => p.slug === slug);
+  if (index === -1 || index === posts.length - 1) return null; // In descending sort order, the older post is at index + 1
+  return posts[index + 1];
 }

@@ -5,63 +5,39 @@ import Link from 'next/link';
 
 interface Article {
   id: string;
+  slug: string;
   title: string;
   excerpt: string;
   readTime: number;
   image: string;
-  imageAlt: string;
-  tag: string;
+  tags: string[];
+  date: string;
 }
 
-const BlogInsights = () => {
+interface BlogInsightsProps {
+  posts: Article[];
+}
+
+const BlogInsights = ({ posts }: BlogInsightsProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('All');
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Featured article
-  const featuredArticle: Article = {
-    id: 'featured',
-    title: 'Lời mở đầu: Hành trình giải mã trí tuệ nhân tạo',
-    excerpt: 'Chào mừng bạn đến với AI-up Insights. Đây không chỉ là một blog công nghệ, mà là nơi chúng ta cùng nhau khám phá những ngóc ngách sâu nhất của LLMs, cơ chế RAG tối ưu và cách xây dựng hệ thống AI bền vững trong thực tế.',
-    readTime: 8,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAddB3XqetatTluwLs1mjpP4IzTxvDH_zOzrk8_GvpmR7UBw-daVIMO-5xWQmDtD3ydaBk_1TKu9AWCgt376nv1ye31BuMKV0_i5E_TSNqh2RVPpIwAcLuhGSYE0cTA24HKPTpj70OpCvmUmbe12zoncJT8TfYKG0tsEcWKZRScoT-wyscdtxyyei906uF-R-UK_pbDUYLtH-zEBkDKUxKTCsRzrTBzvgbio5Rcn0qZEwSy7QFPw5B7XqiNdhoU2tHlNcK-hnzL7UAF',
-    imageAlt: 'A cinematic neural network structure',
-    tag: 'Featured',
-  };
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="text-center py-20 text-on-surface-variant italic">
+        Chưa có bài viết nào được xuất bản.
+      </div>
+    );
+  }
 
-  // Regular articles
-  const articles: Article[] = [
-    {
-      id: 'day1',
-      title: 'Thiết lập nền tảng: Từ Prompt đến Architecture',
-      excerpt: 'Tại sao việc hiểu cấu trúc dữ liệu lại quan trọng hơn việc viết prompt giỏi? Chúng ta bắt đầu hành trình bằng việc định nghĩa lại cách tiếp cận hệ thống dựa trên AI.',
-      readTime: 5,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3e5mL1KJFRlip_tnXWpy3DXNK4myNjW5VuKkHi6H5S5LtcqE725XAv2jL2Dt1o2Mt1gVHxzWjAxORskcV7ykCzk_o83NVX6PirRU17wWN_zAy0BwTxdKlDwaitwEc9nbwXRurvlNM4FHxOzhblbAYoIlvvHhtEGYwFi22SJCHA3A35HFNMWElJaKksYAcedOp3X-2nWEt7DhmYvUJuOxqhLSb7ujikFzqvxdhPSkBvX1MWqf6QEOqtP_hZvwc9iv6hhSiCybCSXus',
-      imageAlt: 'Minimalist 3D code blocks',
-      tag: 'LLM',
-    },
-    {
-      id: 'day2',
-      title: 'Tối ưu hóa RAG: Khi Retrieval gặp Context',
-      excerpt: 'Deep dive vào các kỹ thuật phân mảnh dữ liệu (chunking) và vector embeddings để giảm thiểu hiện tượng "hallucination" trong mô hình ngôn ngữ lớn.',
-      readTime: 12,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkLioWezc-Pyj_ckedi37kspmw7qQCbHTGo7gbn5HJpu-Ar1tGbw-_cVxXKpGxlao_Xdm9Rz9u6ED-ExQNpkTdiOIBfbjvaC4rRp1y-l7Dd_wKT3LONZ8yxcgtwIUe8IeyGYcTBW5gnnY9i4BPIKFH7onVvmbTupimnddMckZzreXB50QbFQw9XtdttJJZQ1djX7BBNizqmhH9VsIyLPGSb5Ia8C6WBuKrRrs4Qh2TdTZLY59b0waN2DhN9So-cFRnj6GOLaOj4MQc',
-      imageAlt: 'Data retrieval visualization',
-      tag: 'RAG',
-    },
-    {
-      id: 'day3',
-      title: 'Xây dựng Agentic Workflows đầu tiên',
-      excerpt: 'Vượt xa hơn các phản hồi đơn lẻ. Học cách thiết kế hệ thống có khả năng tự lập kế hoạch và thực thi nhiệm vụ phức tạp thông qua các công cụ.',
-      readTime: 7,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuChgXz_2KI-MHde4yVyJ3S8e-dx6BNd_SmNL1xUSqSmRnRNrz4hky5XYeebBS8YDEhYQiaAlNZFBT0dNXEq0HTEeAqUGiiQkb2FP4mOdkEBaNTSgZTdmqteoPHerD_EqW91bH1q4v0Blzip969i2EBz29D7qEcHW_wAUsc2YPCxQNbTRzjcSdWG3tWKYyjJSsBrC7-PWLlIVdVvsJEv_SQ3G-G_i_IGS6u-Tjut999NddhuGNx520tRdR93ba-24YeaLgl9vz2H0K-D',
-      imageAlt: 'Futuristic terminal interface',
-      tag: 'Engineering',
-    },
-  ];
+  // Find Featured article: first post with 'Featured' tag (case-insensitive) or just the newest post
+  const featuredArticle = posts.find(p => p.tags.some(t => t.toLowerCase() === 'featured')) || posts[0];
+  const regularArticles = posts.filter(p => p.slug !== featuredArticle.slug);
 
-  const tags = ['All', 'LLM', 'RAG', 'Engineering', 'NeuralOps'];
+  // Extract dynamic tags list
+  const tags = ['All', ...Array.from(new Set(posts.flatMap(p => p.tags || []))).sort()];
 
   // Scroll progress effect
   useEffect(() => {
@@ -84,69 +60,21 @@ const BlogInsights = () => {
 
   // Sort toggle
   const handleSortToggle = () => {
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-    setScrollProgress(100);
-    setScrollProgress(0);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-
-    setScrollProgress(0);
-    setScrollProgress(100);
-
     setSortOrder(sortOrder === 'latest' ? 'oldest' : 'latest');
   };
+
+  const filteredPosts = regularArticles.filter(
+    (article) =>
+      (selectedTag === 'All' || article.tags.includes(selectedTag)) &&
+      (article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
+    return sortOrder === 'latest'
+      ? new Date(b.date).getTime() - new Date(a.date).getTime()
+      : new Date(a.date).getTime() - new Date(b.date).getTime();
+  });
 
   return (
     <div className="ai-up-insights">
@@ -210,7 +138,7 @@ const BlogInsights = () => {
 
       {/* Featured Card */}
       <article className="featured-card-wrapper">
-        <Link href="/blog/featured" className="featured-card-link">
+        <Link href={`/blog/${featuredArticle.slug}`} className="featured-card-link">
           <div className="featured-card card-glow">
             <div
               className="featured-image"
@@ -233,9 +161,9 @@ const BlogInsights = () => {
 
       {/* Articles Grid */}
       <div className="articles-grid">
-        {articles.map((article, index) => (
-          <article key={article.id} className="article-card-wrapper">
-            <Link href={`/blog/${article.id}`} className="article-card-link">
+        {sortedPosts.map((article, index) => (
+          <article key={article.slug} className="article-card-wrapper">
+            <Link href={`/blog/${article.slug}`} className="article-card-link">
               <div className="article-card card-glow">
                 <div className="article-layout">
                   <div
@@ -244,7 +172,9 @@ const BlogInsights = () => {
                   />
                   <div className="article-content">
                     <div className="article-meta">
-                      <span className="day-badge">Day {index + 1}</span>
+                      <span className="day-badge">
+                        {article.title.match(/day\s*\d+/i)?.[0] || article.tags[0] || 'Insight'}
+                      </span>
                       <span className="meta-dot">•</span>
                       <span className="read-time">{article.readTime} min read</span>
                     </div>
@@ -253,7 +183,7 @@ const BlogInsights = () => {
                     <div className="reading-progress-track" style={{ maxWidth: '120px' }}>
                       <div
                         className="reading-progress-fill"
-                        style={{ width: `${Math.max(15, 45 - index * 15)}%` }}
+                        style={{ width: '30%' }}
                       />
                     </div>
                   </div>

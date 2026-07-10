@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getBlogArticles, getBlogArticleBySlug, getNextArticle, getPreviousArticle } from '@/lib/blog-data';
+import { getSortedPostsData, getPostData, getNextPost, getPreviousPost } from '@/lib/posts';
 import MermaidRenderer from '@/app/components/MermaidRenderer';
 
 interface BlogPostPageProps {
@@ -12,29 +12,23 @@ interface BlogPostPageProps {
 
 // Generate static params for SSG
 export async function generateStaticParams() {
-  const articles = getBlogArticles();
-  return articles.map((article) => ({
-    slug: article.slug,
+  const posts = getSortedPostsData();
+  return posts.map((post) => ({
+    slug: post.slug,
   }));
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getBlogArticleBySlug(slug);
+  const post = getPostData(slug);
 
   if (!post) {
     notFound();
   }
 
   // Get next/previous posts
-  const nextPost = getNextArticle(slug);
-  const previousPost = getPreviousArticle(slug);
-  const postDate = new Date(post.date).toLocaleDateString('vi-VN', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: '2-digit', 
-    day: '2-digit' 
-  });
+  const nextPost = getNextPost(slug);
+  const previousPost = getPreviousPost(slug);
 
   return (
     <>
@@ -136,7 +130,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="flex flex-wrap items-center gap-4 mb-2 text-on-surface-variant font-label-md">
               <span className="flex items-center gap-1">
                 <span className="material-symbols-outlined text-[16px]">calendar_today</span>
-                {postDate}
+                {post.dateString}
               </span>
               <span className="flex items-center gap-1 border-l border-outline-variant/30 pl-4">
                 <span className="material-symbols-outlined text-[16px]">schedule</span>
@@ -147,9 +141,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.title}
             </h1>
             <div className="flex flex-wrap gap-2 mb-12">
-              <span className="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-xs">
-                #{post.tag}
-              </span>
+              {(post.tags || []).map((tag) => (
+                <span key={tag} className="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-xs">
+                  #{tag}
+                </span>
+              ))}
             </div>
           </header>
 
@@ -172,7 +168,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Body Content */}
           <div 
             className="article-content text-on-surface-variant leading-relaxed mb-20"
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
           />
 
           {/* Client-side Mermaid Renderer */}
