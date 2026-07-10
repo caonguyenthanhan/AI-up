@@ -110,6 +110,140 @@
             font-size: 0.85rem;
             color: #c2c0b6;
         }
+
+        /* Floating Print Button style */
+        .print-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #7c6af7;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(124, 106, 247, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            z-index: 1000;
+            font-family: inherit;
+        }
+        .print-btn:hover {
+            background-color: #634ef5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(124, 106, 247, 0.6);
+        }
+        .print-btn:active {
+            transform: translateY(0);
+        }
+        .print-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            display: inline-block;
+            margin: 0;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 10pt !important;
+                line-height: 1.35 !important;
+            }
+            @page {
+                margin: 1cm;
+                size: A4;
+            }
+            h1, h2, h3, p, li, strong, span, td, th {
+                color: #000 !important;
+            }
+            h1 {
+                font-size: 16pt !important;
+                margin-top: 0 !important;
+                margin-bottom: 0.5rem !important;
+                page-break-after: avoid;
+            }
+            h2 {
+                font-size: 12pt !important;
+                margin-top: 1rem !important;
+                margin-bottom: 0.4rem !important;
+                page-break-after: avoid;
+            }
+            p, ul, li {
+                margin-bottom: 0.4rem !important;
+            }
+            .tags {
+                color: #555 !important;
+                font-size: 8pt !important;
+                margin-bottom: 0.5rem !important;
+            }
+            .highlight {
+                color: #000 !important;
+                font-weight: bold !important;
+                text-decoration: underline !important;
+            }
+            .diagram-container, .action-box {
+                background: none !important;
+                border: 1px solid #000 !important;
+                border-radius: 4px !important;
+                margin: 1rem 0 !important;
+                padding: 0.8rem !important;
+                page-break-inside: avoid;
+            }
+            .diagram-caption {
+                color: #555 !important;
+                font-size: 8pt !important;
+                margin-top: 0.5rem !important;
+            }
+            svg, img {
+                max-height: 250px !important;
+                width: auto !important;
+                display: block !important;
+                margin: 0 auto !important;
+                page-break-inside: avoid;
+            }
+            svg text {
+                fill: #000 !important;
+            }
+            svg rect {
+                fill: #fff !important;
+                stroke: #000 !important;
+                fill-opacity: 1 !important;
+            }
+            svg path {
+                stroke: #000 !important;
+            }
+            svg marker path {
+                fill: #000 !important;
+                stroke: #000 !important;
+            }
+            pre {
+                background: none !important;
+                border: 1px solid #000 !important;
+                color: #000 !important;
+                page-break-inside: avoid;
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+            }
+            footer {
+                margin-top: 1.5rem !important;
+                padding-top: 0.8rem !important;
+                border-top: 1px solid #000 !important;
+                page-break-inside: avoid;
+            }
+            .print-btn {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -242,5 +376,9 @@
             Nguồn tài liệu: Trích xuất từ "Context Engineering in 29 Minutes: Complete Course" và "5 Skills That'll Make You a $300K AI Engineer in 2026".
         </div>
     </footer>
+    <button class="print-btn" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        In tài liệu
+    </button>
 </body>
 </html>
