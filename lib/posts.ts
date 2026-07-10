@@ -164,15 +164,14 @@ export function getSortedPostsData(): PostData[] {
           tags = tagsStr.match(/#([a-zA-Z0-9_\-]+)/g)?.map((t) => t.replace('#', '')) || [];
         }
 
-        const mainMatch = fileContent.match(/<main>([\s\S]*?)<\/main>/i);
         const bodyMatch = fileContent.match(/<body[^>]*?>([\s\S]*?)<\/body>/i);
         
-        if (mainMatch) {
-          contentHtml = mainMatch[1].trim();
-        } else if (bodyMatch) {
-          // If no main, get body content and try to remove headers
+        if (bodyMatch) {
+          // Get the entire body content, remove headers (since the site renders metadata in layout)
           let bodyContent = bodyMatch[1].trim();
           bodyContent = bodyContent.replace(/<header>[\s\S]*?<\/header>/i, '');
+          // Remove main tags, keeping their content, to prevent tag mismatches
+          bodyContent = bodyContent.replace(/<\/?main[^>]*?>/gi, '');
           contentHtml = bodyContent;
         } else {
           contentHtml = fileContent;
