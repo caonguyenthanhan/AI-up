@@ -3,54 +3,54 @@
 @import "tailwindcss";
 
 :root {
-  /* Material Design 3 Color System */
-  --surface-container-lowest: #0e0e13;
-  --tertiary: #ffb783;
-  --tertiary-fixed: #ffdcc5;
-  --surface-container-high: #2a292f;
-  --secondary-fixed: #dde1ff;
+  /* Material Design 3 / Stitch Premium Color System */
+  --surface-container-lowest: #0a0f14;
+  --tertiary: #ffb77d;
+  --tertiary-fixed: #ffdcc3;
+  --surface-container-high: #262a30;
+  --secondary-fixed: #f0dbff;
   --on-error: #690005;
-  --surface-dim: #131318;
-  --surface-tint: #c0c1ff;
-  --on-surface: #e4e1e9;
-  --primary-container: #8083ff;
-  --on-tertiary: #4f2500;
-  --background: #131318;
-  --outline-variant: #464554;
-  --on-primary: #1000a9;
-  --inverse-primary: #494bd6;
-  --tertiary-container: #d97721;
-  --on-surface-variant: #c7c4d7;
-  --inverse-on-surface: #303036;
-  --tertiary-fixed-dim: #ffb783;
+  --surface-dim: #0f1419;
+  --surface-tint: #98cbff;
+  --on-surface: #dfe3ea;
+  --primary-container: #00a3ff;
+  --on-tertiary: #4d2600;
+  --background: #050505;
+  --outline-variant: #3f4852;
+  --on-primary: #003354;
+  --inverse-primary: #00629d;
+  --tertiary-container: #eb8104;
+  --on-surface-variant: #bec7d4;
+  --inverse-on-surface: #2c3137;
+  --tertiary-fixed-dim: #ffb77d;
   --on-error-container: #ffdad6;
-  --on-tertiary-container: #452000;
-  --on-tertiary-fixed: #301400;
-  --primary: #c0c1ff;
-  --surface-container-low: #1b1b20;
-  --primary-fixed: #e1e0ff;
-  --secondary-container: #334282;
-  --on-primary-container: #0d0096;
-  --surface-variant: #35343a;
-  --surface-container-highest: #35343a;
+  --on-tertiary-container: #522900;
+  --on-tertiary-fixed: #2f1500;
+  --primary: #98cbff;
+  --surface-container-low: #171c22;
+  --primary-fixed: #cfe5ff;
+  --secondary-container: #6f00be;
+  --on-primary-container: #00375a;
+  --surface-variant: #30353b;
+  --surface-container-highest: #30353b;
   --error-container: #93000a;
   --error: #ffb4ab;
-  --inverse-surface: #e4e1e9;
-  --on-primary-fixed-variant: #2f2ebe;
-  --secondary: #b8c4ff;
-  --surface-bright: #39383e;
-  --secondary-fixed-dim: #b8c4ff;
-  --primary-fixed-dim: #c0c1ff;
-  --on-primary-fixed: #07006c;
-  --on-secondary-container: #a2b1f9;
-  --surface: #131318;
-  --on-secondary-fixed: #001354;
-  --outline: #908fa0;
-  --on-secondary-fixed-variant: #334282;
-  --on-background: #e4e1e9;
-  --on-tertiary-fixed-variant: #703700;
-  --surface-container: #1f1f25;
-  --on-secondary: #1a2b6a;
+  --inverse-surface: #dfe3ea;
+  --on-primary-fixed-variant: #004a77;
+  --secondary: #ddb7ff;
+  --surface-bright: #353a40;
+  --secondary-fixed-dim: #ddb7ff;
+  --primary-fixed-dim: #98cbff;
+  --on-primary-fixed: #001d33;
+  --on-secondary-container: #d6a9ff;
+  --surface: #0f1419;
+  --on-secondary-fixed: #2c0051;
+  --outline: #88919d;
+  --on-secondary-fixed-variant: #6900b3;
+  --on-background: #dfe3ea;
+  --on-tertiary-fixed-variant: #6e3900;
+  --surface-container: #1b2026;
+  --on-secondary: #490080;
   
   --font-title: 'Hanken Grotesk', -apple-system, sans-serif;
   --font-body: 'Hanken Grotesk', -apple-system, sans-serif;
@@ -70,7 +70,7 @@ html {
 }
 
 body {
-  background-color: #0a0a0f;
+  background-color: var(--background);
   color: var(--on-surface);
   font-family: var(--font-body);
   line-height: 1.6;

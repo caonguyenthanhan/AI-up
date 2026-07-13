@@ -83,13 +83,87 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           font-style: italic;
           color: #c7c4d7;
         }
-        .code-inline {
+        .code-inline, .article-content code {
           font-family: 'JetBrains Mono', monospace;
           background: rgba(192, 193, 255, 0.1);
           color: #c0c1ff;
           padding: 2px 6px;
           border-radius: 4px;
           font-size: 0.9em;
+        }
+        .article-content pre {
+          background: rgba(22, 22, 30, 0.6) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 12px;
+          padding: 1.25rem;
+          overflow-x: auto;
+          margin: 2rem 0;
+          backdrop-filter: blur(8px);
+        }
+        .article-content pre code {
+          background: transparent;
+          padding: 0;
+          color: inherit;
+        }
+        .article-content .diagram-container {
+          margin: 3rem 0;
+          padding: 1.5rem;
+          background: rgba(124, 106, 247, 0.04);
+          border-radius: 12px;
+          border: 1px solid rgba(124, 106, 247, 0.2);
+          backdrop-filter: blur(8px);
+        }
+        .article-content .diagram-caption {
+          text-align: center;
+          font-size: 0.85rem;
+          color: #c2c0b6;
+          margin-top: 1.5rem;
+          font-style: italic;
+        }
+        .article-content .action-box {
+          background: linear-gradient(145deg, rgba(124,106,247,0.06), rgba(11,11,15,0.8));
+          border-left: 4px solid #7c6af7;
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          border-right: 1px solid rgba(255, 255, 255, 0.05);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding: 1.5rem;
+          border-radius: 0 12px 12px 0;
+          margin: 3rem 0;
+          backdrop-filter: blur(8px);
+        }
+        .article-content .action-box h3 {
+          margin: 0 0 1rem 0;
+          font-size: 1.25rem;
+          color: #7c6af7;
+          font-weight: 600;
+        }
+        .article-content .highlight {
+          color: #D85A30;
+          font-weight: 500;
+          background: rgba(216, 90, 48, 0.1);
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+        .article-content .question-box {
+          background: rgba(29, 158, 117, 0.04);
+          border-radius: 12px;
+          border: 1px solid rgba(29, 158, 117, 0.2);
+          padding: 1.5rem;
+          margin-top: 2rem;
+          backdrop-filter: blur(8px);
+        }
+        .article-content .question-box h3 {
+          margin: 0 0 0.5rem 0;
+          font-size: 1.15rem;
+          color: #1D9E75;
+          font-weight: 600;
+        }
+        .article-content .sources {
+          font-size: 0.85rem;
+          color: #c2c0b6;
+          margin-top: 1.5rem;
+          padding-top: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
         .material-symbols-outlined {
           font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -266,7 +340,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* Body Content */}
           <div 
-            className="article-content text-on-surface-variant leading-relaxed mb-20"
+            className="post-content article-content text-on-surface-variant leading-relaxed mb-20"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
           />
 

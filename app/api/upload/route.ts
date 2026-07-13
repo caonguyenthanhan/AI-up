@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAdminSession } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
+    const isSessionValid = await verifyAdminSession();
     const { fileName, content, password } = await req.json();
 
-    // 1. Validate required fields
-    if (!fileName || !content || !password) {
+    // 1. Validate required fields (password is only required if session is invalid)
+    if (!fileName || !content || (!isSessionValid && !password)) {
       return NextResponse.json(
-        { error: 'Thiếu thông tin bắt buộc (Tên file, nội dung hoặc mật khẩu).' },
+        { error: 'Thiếu thông tin bắt buộc (Tên file hoặc nội dung).' },
         { status: 400 }
       );
     }
@@ -22,31 +24,33 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Validate server configuration
-    const GITHUB_PAT = process.env.GITHUB_PAT;
+    const GITHUB_PAT = process.env.GITHUB_PAT || process.env.GITHUB_TOKEN;
     const GITHUB_OWNER = process.env.GITHUB_OWNER || 'caonguyenthanhan';
     const GITHUB_REPO = process.env.GITHUB_REPO || 'AI-up';
-    const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
 
     if (!GITHUB_PAT) {
       return NextResponse.json(
-        { error: 'Cấu hình máy chủ bị thiếu: GITHUB_PAT chưa được cài đặt.' },
+        { error: 'Cấu hình máy chủ bị thiếu: GITHUB_PAT hoặc GITHUB_TOKEN chưa được cài đặt.' },
         { status: 500 }
       );
     }
 
-    if (!UPLOAD_PASSWORD) {
-      return NextResponse.json(
-        { error: 'Cấu hình máy chủ bị thiếu: UPLOAD_PASSWORD chưa được cài đặt.' },
-        { status: 500 }
-      );
-    }
+    // 4. Validate authentication (fallback to password check if session is not valid)
+    if (!isSessionValid) {
+      const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD || process.env.ADMIN_PASSWORD;
+      if (!UPLOAD_PASSWORD) {
+        return NextResponse.json(
+          { error: 'Cấu hình máy chủ bị thiếu: UPLOAD_PASSWORD hoặc ADMIN_PASSWORD chưa được cài đặt.' },
+          { status: 500 }
+        );
+      }
 
-    // 4. Validate authentication password
-    if (password !== UPLOAD_PASSWORD) {
-      return NextResponse.json(
-        { error: 'Mật khẩu quản trị không chính xác.' },
-        { status: 401 }
-      );
+      if (password !== UPLOAD_PASSWORD) {
+        return NextResponse.json(
+          { error: 'Mật khẩu quản trị không chính xác.' },
+          { status: 401 }
+        );
+      }
     }
 
     const githubApiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/detail/${fileName}`;
