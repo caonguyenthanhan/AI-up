@@ -981,3 +981,23 @@ textarea::-webkit-scrollbar-thumb:hover {
   flex-shrink: 0;
 }
 
+/* Premium Form Input Overrides */
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+  min-height: 46px !important;
+  border-radius: 10px !important;
+  font-size: 0.95rem !important;
+  padding: 0.75rem 1rem !important;
+  box-sizing: border-box !important;
+  line-height: 1.5 !important;
+}
+
+textarea {
+  border-radius: 10px !important;
+  font-size: 0.95rem !important;
+  padding: 0.75rem 1rem !important;
+  box-sizing: border-box !important;
+  line-height: 1.6 !important;
+}
+

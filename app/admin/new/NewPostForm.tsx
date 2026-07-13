@@ -346,7 +346,7 @@ export default function NewPostForm({ availableTags, initialPost }: NewPostFormP
   };
 
   return (
-    <main className="pt-24 pb-32 max-w-[95vw] xl:max-w-7xl mx-auto px-4 sm:px-6">
+    <main className="pt-24 pb-32 max-w-[95vw] xl:max-w-[1500px] mx-auto px-4 sm:px-6">
       {/* Toast Notification */}
       {toastMessage && (
         <div
@@ -425,8 +425,8 @@ export default function NewPostForm({ availableTags, initialPost }: NewPostFormP
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Editor and Preview (Takes 9 columns on desktop) */}
-        <div className="lg:col-span-9 space-y-6">
+        {/* Editor and Preview (Takes 10 columns on desktop) */}
+        <div className="lg:col-span-10 space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* Column 1: Writing Area */}
             <div className={`space-y-6 ${activeTab === 'write' ? 'block' : 'hidden lg:block'}`}>
@@ -799,8 +799,8 @@ export default function NewPostForm({ availableTags, initialPost }: NewPostFormP
           </div>
         </div>
 
-        {/* Sidebar (Takes 3 columns on desktop) */}
-        <div className="lg:col-span-3 space-y-6">
+        {/* Sidebar (Takes 2 columns on desktop) */}
+        <div className="lg:col-span-2 space-y-6">
           {/* Existing Tags selection */}
           <div className="p-6 rounded-2xl bg-surface-container border border-outline-variant/20 backdrop-blur-xl">
             <h3 className="text-on-surface font-semibold mb-4 text-xs uppercase tracking-wider flex items-center gap-2 border-b border-outline-variant/20 pb-3">
