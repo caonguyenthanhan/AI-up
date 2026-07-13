@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5: Từ Người Hỏi Đến Kỹ Sư Ra Đề — Thay Đổi Tư Duy Khi Viết Prompt</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        code {
+            background-color: #1a1a1a;
+            color: #D85A30;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #c2c0b6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Hai, 13/07/2026</span>
+        <h1>Day 5: Từ Người Hỏi Đến Kỹ Sư Ra Đề — Thay Đổi Tư Duy Khi Viết Prompt</h1>
+        <div class="tags">#PromptEngineering #Mindset #AIEngineer #SpecDriven</div>
+    </header>
+
+    <main>
+        <p>Chào ông, bốn ngày qua chúng ta đã xây khá nhiều thứ nặng đô: quản lý RAM cho Agent (Context Engineering), đồ thị tri thức (GraphRAG), và hệ thống Evals để đo lường chất lượng thay vì "test bằng mắt". Nhưng hôm nay, ta sẽ lùi lại một bước, về đúng viên gạch đầu tiên mà gần như ai cũng đặt sai: <strong>cách ông viết một dòng prompt</strong>.</p>
+
+        <p>Đây không phải bài cơ bản dành cho người mới. Đây là bài dành cho người đã biết code, đã hiểu kiến trúc hệ thống, nhưng vẫn đang gõ prompt với phản xạ của một người <em>hỏi Google</em>. Phản xạ đó là thứ âm thầm phá hỏng mọi tầng kỹ thuật tinh vi ông xây ở 4 ngày trước.</p>
+
+        <h2>Cái Bẫy Tư Duy "Hỏi — Đáp"</h2>
+        <p>Khi mới dùng ChatGPT hay Claude, ai cũng bắt đầu bằng phản xạ hội thoại: gõ một câu hỏi ngắn, kỳ vọng model tự hiểu ý mình muốn gì, giống như đang nhắn tin cho một đồng nghiệp đã làm việc chung 5 năm. Vấn đề là <span class="highlight">LLM không phải đồng nghiệp cũ</span> — nó là một chuyên gia cực kỳ có năng lực nhưng hoàn toàn không có trí nhớ về ông, về dự án của ông, về "ý ông muốn nói" ẩn phía sau câu chữ.</p>
+
+        <p>Hậu quả của tư duy "Hỏi — Đáp" luôn giống nhau: output nghe hợp lý nhưng chung chung (dân trong nghề gọi là <strong>Slop</strong> — sản phẩm nhạt, đúng cấu trúc nhưng vô hồn), và tệ hơn, <strong>không lặp lại được</strong>. Cùng một ý định, chạy prompt đó ba lần, ông nhận về ba chất lượng khác nhau — vì bản thân prompt không hề định nghĩa rõ "thế nào là một câu trả lời đúng".</p>
+
+        <h2>Chuyển Dịch: Prompt Là Một Bản Đặc Tả, Không Phải Một Câu Hỏi</h2>
+        <p>Tư duy đúng của một AI Engineer là: mỗi prompt production-grade phải được viết như <strong>một bản đặc tả kỹ thuật (Spec)</strong> — giống hệt cách ông viết một API contract hay một Pull Request description cho đồng đội chưa từng biết gì về task này. Ông không "hỏi", ông "ra đề" — và một đề bài tốt luôn trả lời được 5 câu hỏi sau trước khi model kịp suy nghĩ:</p>
+
+        <ul>
+            <li><strong>1. Role (Vai trò):</strong> Ông đang thuê ai làm việc này? "Một chuyên gia tối ưu SQL với 10 năm kinh nghiệm" sẽ cho ra output khác hẳn "một trợ lý hữu ích chung chung". Role thu hẹp không gian xác suất mà model sẽ chọn từ.</li>
+            <li><strong>2. Context (Bối cảnh):</strong> Đủ, nhưng không thừa — đây chính là nguyên tắc <em>Select</em> ông đã học ở Day 1. Nhồi cả file log 5000 dòng vào chỉ vì "để an toàn" chỉ làm loãng tín hiệu thật.</li>
+            <li><strong>3. Task cụ thể + Tiêu chí thành công:</strong> "Viết code refactor" là một câu hỏi. "Refactor hàm này để giảm độ phức tạp cyclomatic xuống dưới 5, giữ nguyên toàn bộ test case hiện có" là một đề bài — có thể chấm điểm được, đúng tinh thần Evals ở Day 3.</li>
+            <li><strong>4. Format đầu ra:</strong> Ông cần JSON để code parse, hay Markdown để người đọc? Không nói rõ, model sẽ tự chọn — và nó sẽ đổi ý giữa các lần chạy.</li>
+            <li><strong>5. Ví dụ (Few-shot):</strong> Một ví dụ đúng đáng giá hơn một trang mô tả bằng lời. Nếu có thể, thêm cả một <em>ví dụ sai điển hình</em> để model biết chính xác ranh giới cần tránh.</li>
+        </ul>
+
+        <h2>Vì Sao Đây Là Nền Móng, Không Phải Chi Tiết Vụn Vặt</h2>
+        <p>Ông có thể nghĩ: "Mình đã có Context Engineering để dọn RAM, có GraphRAG để truy xuất chính xác, có Evals để đo chất lượng — sao vẫn cần quan tâm cách viết một dòng prompt?". Câu trả lời: <strong>3 hệ thống đó chỉ khuếch đại thứ ông đưa vào, không sửa được một đề bài mơ hồ ngay từ gốc</strong>.</p>
+
+        <p>Nếu Task ở gốc không có tiêu chí thành công rõ ràng, bộ Evals của ông ở Day 3 sẽ không biết chấm "pass" hay "fail" dựa vào đâu. Nếu Context ông nạp vào không phục vụ đúng Role đã định nghĩa, WRCI ở Day 1 chỉ đang nén và cách ly... một mớ hỗn độn gọn gàng hơn một chút. Tư duy Spec-driven không thay thế các kỹ thuật đã học — nó là điều kiện tiên quyết để các kỹ thuật đó phát huy tác dụng.</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 320" width="100%">
+            <defs>
+                <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#D85A30"/>
+                </marker>
+                <marker id="arrow-teal5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75"/>
+                </marker>
+            </defs>
+
+            <!-- OLD MINDSET -->
+            <text x="150" y="30" fill="#D85A30" font-size="14" font-weight="600" text-anchor="middle">TƯ DUY "HỎI — ĐÁP"</text>
+
+            <rect x="60" y="50" width="180" height="45" rx="6" fill="rgba(216,90,48,0.12)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="150" y="77" fill="#e8e6e0" font-size="12" text-anchor="middle">"Viết code refactor giúp tôi"</text>
+
+            <path d="M 150 95 L 150 130" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-red)"/>
+
+            <rect x="60" y="140" width="180" height="45" rx="6" fill="rgba(216,90,48,0.12)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="150" y="160" fill="#e8e6e0" font-size="12" text-anchor="middle" font-weight="500">Model tự đoán</text>
+            <text x="150" y="176" fill="#c2c0b6" font-size="10" text-anchor="middle">(Role, Format, Tiêu chí = ?)</text>
+
+            <path d="M 150 185 L 150 220" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-red)"/>
+
+            <rect x="60" y="230" width="180" height="50" rx="6" fill="rgba(216,90,48,0.2)" stroke="#D85A30" stroke-width="2"/>
+            <text x="150" y="252" fill="#e8e6e0" font-size="12" font-weight="500" text-anchor="middle">Output "Slop"</text>
+            <text x="150" y="269" fill="#D85A30" font-size="10" text-anchor="middle">Đổi kết quả mỗi lần chạy</text>
+
+            <!-- Divider -->
+            <line x1="340" y1="20" x2="340" y2="300" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
+
+            <!-- NEW MINDSET -->
+            <text x="510" y="30" fill="#1D9E75" font-size="14" font-weight="600" text-anchor="middle">TƯ DUY "RA ĐỀ" (SPEC)</text>
+
+            <rect x="420" y="45" width="180" height="30" rx="5" fill="rgba(29,158,117,0.12)" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="510" y="65" fill="#e8e6e0" font-size="11" text-anchor="middle">1. Role: Chuyên gia refactor</text>
+
+            <rect x="420" y="82" width="180" height="30" rx="5" fill="rgba(29,158,117,0.12)" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="510" y="102" fill="#e8e6e0" font-size="11" text-anchor="middle">2. Context: hàm + test hiện có</text>
+
+            <rect x="420" y="119" width="180" height="30" rx="5" fill="rgba(29,158,117,0.12)" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="510" y="139" fill="#e8e6e0" font-size="11" text-anchor="middle">3. Task: giảm complexity &lt; 5</text>
+
+            <rect x="420" y="156" width="180" height="30" rx="5" fill="rgba(29,158,117,0.12)" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="510" y="176" fill="#e8e6e0" font-size="11" text-anchor="middle">4. Format: diff patch</text>
+
+            <rect x="420" y="193" width="180" height="30" rx="5" fill="rgba(29,158,117,0.12)" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="510" y="213" fill="#e8e6e0" font-size="11" text-anchor="middle">5. Ví dụ đúng/sai kèm theo</text>
+
+            <path d="M 510 223 L 510 240" fill="none" stroke="#1D9E75" stroke-width="2" marker-end="url(#arrow-teal5)"/>
+
+            <rect x="420" y="248" width="180" height="50" rx="6" fill="rgba(29,158,117,0.2)" stroke="#1D9E75" stroke-width="2"/>
+            <text x="510" y="270" fill="#e8e6e0" font-size="12" font-weight="500" text-anchor="middle">Output ổn định</text>
+            <text x="510" y="287" fill="#1D9E75" font-size="10" text-anchor="middle">Chấm được Pass/Fail (Day 3)</text>
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Cùng một ý định, hai cách tiếp cận cho ra hai loại kết quả hoàn toàn khác nhau. Bên trái model phải tự đoán mọi tham số còn thiếu; bên phải mọi tham số đã được "ra đề" rõ ràng trước khi model bắt đầu suy luận.</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~15-18 phút)</h3>
+        <p>Đừng chỉ đọc lý thuyết — hãy kiểm chứng ngay mức độ "may rủi" trong prompt ông đang dùng hằng ngày:</p>
+        <ol>
+            <li>Lấy một prompt ông đã dùng gần đây cho công việc thật (không phải ví dụ demo).</li>
+            <li>Chạy nguyên văn prompt đó <strong>3 lần riêng biệt</strong>. Nếu 3 output khác nhau đáng kể về format, độ dài hoặc chất lượng — đó chính là bằng chứng prompt đang thiếu ít nhất 1 trong 5 trụ cột (Role, Context, Task, Format, Ví dụ).</li>
+            <li>Viết lại prompt đó theo đúng khung 5 trụ cột ở trên. Với riêng phần <strong>Format</strong>, hãy ép output vào một cấu trúc có thể kiểm tra tự động được (JSON với schema cố định, hoặc diff patch) thay vì văn xuôi tự do.</li>
+            <li>Chạy lại 3 lần với bản mới. So sánh độ lệch giữa 3 lần chạy trước và sau — đây chính là con số ông sẽ dùng làm baseline cho hệ thống Evals ở Day 3.</li>
+        </ol>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Trong các prompt hệ thống (System Prompt) ông đang vận hành cho Agent, phần nào đang được viết theo kiểu "câu hỏi mở" mà lẽ ra phải là một "đặc tả đóng" có tiêu chí Pass/Fail rõ ràng — và nếu xiết chặt phần đó lại, ông có đang đánh đổi mất sự linh hoạt cần thiết cho các tình huống ngoài dự tính không?</p>
+        </div>
+        <div class="sources">
+            Nguồn tài liệu: Tổng hợp và biên soạn dựa trên thực hành Spec-driven Prompting và các nguyên tắc Context Engineering, Evals đã đề cập ở Day 1 và Day 3 trong loạt bài này.
+        </div>
+    </footer>
+</body>
+</html>
