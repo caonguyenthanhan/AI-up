@@ -51,12 +51,68 @@
   --on-tertiary-fixed-variant: #6e3900;
   --surface-container: #1b2026;
   --on-secondary: #490080;
+
+  /* Explicit UI Design System Mappings */
+  --accent-purple: #7c6af7;
+  --accent-purple-dim: rgba(124, 106, 247, 0.08);
+  --accent-purple-glow: rgba(124, 106, 247, 0.2);
+  --accent-teal: #1D9E75;
+  --accent-amber: #EF9F27;
+  --accent-orange: #D85A30;
+  
+  --text-primary: var(--on-surface);
+  --text-secondary: var(--on-surface-variant);
+  --card-bg: var(--surface-container);
+  --card-border: var(--outline-variant);
   
   --font-title: 'Hanken Grotesk', -apple-system, sans-serif;
   --font-body: 'Hanken Grotesk', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
   --container-width: 800px;
+}
+
+[data-theme="light"] {
+  --background: #f8f9fa;
+  --on-background: #1a1a1f;
+  --surface: #ffffff;
+  --on-surface: #1a1a1f;
+  --on-surface-variant: #4e4e58;
+  --outline: #8e8e9a;
+  --outline-variant: #d1d1d6;
+  
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f2f2f7;
+  --surface-container: #e5e5ea;
+  --surface-container-high: #d1d1d6;
+  --surface-container-highest: #aeaeaf;
+  --surface-dim: #f2f2f7;
+  --surface-bright: #ffffff;
+  
+  /* Accent colors mapped to highly legible values on light backgrounds */
+  --primary: #5544cf;
+  --on-primary: #ffffff;
+  --primary-container: #e8e6ff;
+  --on-primary-container: #493bb3;
+  
+  --secondary: #0f766e;
+  --on-secondary: #ffffff;
+  --secondary-container: #d6f5eb;
+  --on-secondary-container: #0e5d44;
+  
+  --tertiary: #b45309;
+  
+  --accent-purple: #634ef5;
+  --accent-purple-dim: rgba(99, 78, 245, 0.08);
+  --accent-purple-glow: rgba(99, 78, 245, 0.15);
+  --accent-teal: #0e7490;
+  --accent-amber: #b45309;
+  --accent-orange: #c2410c;
+
+  --text-primary: #1a1a1f;
+  --text-secondary: #4e4e58;
+  --card-bg: #ffffff;
+  --card-border: #e5e5ea;
 }
 
 * {

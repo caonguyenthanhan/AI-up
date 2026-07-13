@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import React from "react";
 import BottomNavBar from "./components/BottomNavBar";
+import ThemeToggle from "./components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "AI-up Insights | AI Engineering & Learning Blog",
@@ -25,6 +26,17 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#131318" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            if (theme === 'light') {
+              document.documentElement.classList.remove('dark');
+            } else {
+              document.documentElement.classList.add('dark');
+            }
+          })()
+        `}} />
       </head>
       <body className="text-on-surface selection:bg-primary-container selection:text-on-primary-container">
         {/* Global Progress Bar */}
@@ -50,6 +62,7 @@ export default function RootLayout({
                 </h1>
               </div>
               <div className="flex items-center gap-4">
+                <ThemeToggle />
                 <a
                   href="https://github.com/caonguyenthanhan/AI-up"
                   target="_blank"

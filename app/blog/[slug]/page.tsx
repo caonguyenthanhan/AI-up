@@ -36,7 +36,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <style>{`
         body {
           background-color: var(--background);
-          color: #e4e1e9;
+          color: var(--on-surface);
           scroll-behavior: smooth;
         }
         .reading-progress-container {
@@ -51,13 +51,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         .reading-progress-bar {
           height: 100%;
           width: 0%;
-          background-color: #c0c1ff;
+          background-color: var(--primary);
           transition: width 0.1s ease-out;
         }
         .glass-panel {
-          background: rgba(22, 22, 30, 0.7);
+          background: var(--card-bg);
           backdrop-filter: blur(12px);
-          border: 1px solid rgba(39, 39, 50, 0.5);
+          border: 1px solid var(--card-border);
         }
         .article-content p {
           margin-bottom: 24px;
@@ -65,7 +65,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         .article-content h2 {
           margin-top: 32px;
           margin-bottom: 16px;
-          border-left: 4px solid #c0c1ff;
+          border-left: 4px solid var(--accent-teal);
           padding-left: 16px;
         }
         .article-content ul, .article-content ol {
@@ -77,23 +77,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           line-height: 1.6;
         }
         .article-content b, .article-content strong {
-          color: #c0c1ff;
+          color: var(--accent-amber);
         }
         .article-content i, .article-content em {
           font-style: italic;
-          color: #c7c4d7;
+          color: var(--text-secondary);
         }
         .code-inline, .article-content code {
           font-family: 'JetBrains Mono', monospace;
-          background: rgba(192, 193, 255, 0.1);
-          color: #c0c1ff;
+          background: var(--accent-purple-dim);
+          color: var(--accent-purple);
           padding: 2px 6px;
           border-radius: 4px;
           font-size: 0.9em;
         }
         .article-content pre {
-          background: rgba(22, 22, 30, 0.6) !important;
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: var(--card-bg) !important;
+          border: 1px solid var(--card-border);
           border-radius: 12px;
           padding: 1.25rem;
           overflow-x: auto;
@@ -108,24 +108,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         .article-content .diagram-container {
           margin: 3rem 0;
           padding: 1.5rem;
-          background: rgba(124, 106, 247, 0.04);
+          background: var(--accent-purple-dim);
           border-radius: 12px;
-          border: 1px solid rgba(124, 106, 247, 0.2);
+          border: 1px solid var(--card-border);
           backdrop-filter: blur(8px);
         }
         .article-content .diagram-caption {
           text-align: center;
           font-size: 0.85rem;
-          color: #c2c0b6;
+          color: var(--text-secondary);
           margin-top: 1.5rem;
           font-style: italic;
         }
         .article-content .action-box {
-          background: linear-gradient(145deg, rgba(124,106,247,0.06), rgba(11,11,15,0.8));
-          border-left: 4px solid #7c6af7;
-          border-top: 1px solid rgba(255, 255, 255, 0.05);
-          border-right: 1px solid rgba(255, 255, 255, 0.05);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          background: linear-gradient(145deg, var(--accent-purple-dim), var(--background));
+          border-left: 4px solid var(--accent-purple);
+          border-top: 1px solid var(--card-border);
+          border-right: 1px solid var(--card-border);
+          border-bottom: 1px solid var(--card-border);
           padding: 1.5rem;
           border-radius: 0 12px 12px 0;
           margin: 3rem 0;
@@ -134,13 +134,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         .article-content .action-box h3 {
           margin: 0 0 1rem 0;
           font-size: 1.25rem;
-          color: #7c6af7;
+          color: var(--accent-purple);
           font-weight: 600;
         }
         .article-content .highlight {
-          color: #D85A30;
+          color: var(--accent-orange);
           font-weight: 500;
-          background: rgba(216, 90, 48, 0.1);
+          background: rgba(216, 90, 48, 0.08);
           padding: 2px 6px;
           border-radius: 4px;
         }
@@ -155,15 +155,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         .article-content .question-box h3 {
           margin: 0 0 0.5rem 0;
           font-size: 1.15rem;
-          color: #1D9E75;
+          color: var(--accent-teal);
           font-weight: 600;
         }
         .article-content .sources {
           font-size: 0.85rem;
-          color: #c2c0b6;
+          color: var(--text-secondary);
           margin-top: 1.5rem;
           padding-top: 1rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-top: 1px solid var(--card-border);
         }
         .material-symbols-outlined {
           font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;

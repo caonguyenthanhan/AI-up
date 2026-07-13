@@ -24,6 +24,7 @@ interface Log {
 export default function AdminDashboard({ posts }: AdminDashboardProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isUploadDrawerOpen, setIsUploadDrawerOpen] = useState(false);
 
   // File Upload State
   const [file, setFile] = useState<File | null>(null);
@@ -171,6 +172,14 @@ export default function AdminDashboard({ posts }: AdminDashboardProps) {
 
   return (
     <main className="pt-24 pb-32 max-w-6xl mx-auto px-6">
+      {/* Drawer Backdrop for Mobile */}
+      {isUploadDrawerOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsUploadDrawerOpen(false)}
+        />
+      )}
+
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-outline-variant/20 pb-8">
         <div>
@@ -179,6 +188,14 @@ export default function AdminDashboard({ posts }: AdminDashboardProps) {
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => setIsUploadDrawerOpen(true)}
+            className="lg:hidden px-5 py-3 rounded-xl bg-[#7c6af7]/10 border border-[#7c6af7]/30 text-[#c0c1ff] hover:bg-[#7c6af7]/20 transition-all font-semibold active:scale-98 flex items-center gap-2 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[20px]">cloud_upload</span>
+            Tải tệp
+          </button>
+
           <Link
             href="/admin/new"
             className="px-5 py-3 rounded-xl bg-[#7c6af7] text-white hover:bg-[#7c6af7]/90 transition-all font-semibold active:scale-98 flex items-center gap-2 cursor-pointer shadow-lg shadow-[#7c6af7]/20"
@@ -218,8 +235,8 @@ export default function AdminDashboard({ posts }: AdminDashboardProps) {
             </div>
           </div>
 
-          {/* Posts List Table */}
-          <div className="rounded-2xl bg-surface-container/60 border border-outline-variant/15 backdrop-blur-xl overflow-hidden">
+          {/* Posts List Table (Hidden on Mobile) */}
+          <div className="hidden md:block rounded-2xl bg-surface-container/60 border border-outline-variant/15 backdrop-blur-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -303,11 +320,84 @@ export default function AdminDashboard({ posts }: AdminDashboardProps) {
               </table>
             </div>
           </div>
+
+          {/* Card List for Mobile */}
+          <div className="block md:hidden space-y-4">
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
+                <div key={post.slug} className="p-5 rounded-2xl bg-surface-container/60 border border-outline-variant/15 backdrop-blur-xl space-y-4">
+                  <div>
+                    <h3 className="font-bold text-on-surface text-base leading-snug">{post.title}</h3>
+                    <p className="text-[11px] text-on-surface-variant/60 font-mono mt-1">/blog/{post.slug}</p>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-on-surface-variant">
+                    <span className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-sm">calendar_today</span>
+                      {post.dateString}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${
+                      post.fileType === 'html'
+                        ? 'bg-[#1d9e75]/10 border-[#1d9e75]/30 text-[#1d9e75]'
+                        : 'bg-[#ef9f27]/10 border-[#ef9f27]/30 text-[#ef9f27]'
+                    }`}>
+                      {post.fileType}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {post.tags.map((tag) => (
+                      <span key={tag} className="px-2 py-0.5 rounded bg-[#7c6af7]/10 border border-[#7c6af7]/20 text-[#c0c1ff] text-[10px] font-semibold">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3 pt-2 border-t border-outline-variant/10">
+                    <Link
+                      href={`/admin/new?slug=${post.slug}`}
+                      className="flex-1 py-2 rounded-xl bg-[#7c6af7]/10 border border-[#7c6af7]/30 text-[#c0c1ff] text-xs font-semibold hover:bg-[#7c6af7]/20 transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">edit</span>
+                      Sửa
+                    </Link>
+                    <a
+                      href={`/blog/${post.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface-variant text-xs font-semibold hover:bg-surface-container-highest hover:text-on-surface transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">visibility</span>
+                      Xem
+                    </a>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-8 text-center text-xs text-on-surface-variant italic bg-surface-container/30 rounded-2xl border border-outline-variant/10">
+                Không tìm thấy bài viết nào phù hợp.
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Right Column (30% on desktop) - File Upload Panel */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="rounded-2xl bg-surface-container/60 border border-outline-variant/15 backdrop-blur-xl p-6 space-y-6">
+        {/* Right Column (30% on desktop, sliding drawer on mobile) */}
+        <div className={`
+          lg:col-span-1 lg:block lg:relative lg:inset-auto lg:w-auto lg:translate-x-0 lg:z-auto lg:p-0 lg:bg-transparent lg:border-none lg:shadow-none
+          ${isUploadDrawerOpen 
+            ? 'fixed inset-y-0 right-0 w-80 z-50 bg-[#0c0c12]/95 border-l border-outline-variant/30 p-6 shadow-2xl transition-all duration-300 transform translate-x-0' 
+            : 'hidden transform translate-x-full'
+          }
+        `}>
+          <div className="rounded-2xl bg-surface-container/60 border border-outline-variant/15 backdrop-blur-xl p-6 space-y-6 h-full lg:h-auto overflow-y-auto">
+            {/* Header for Drawer on Mobile */}
+            <div className="flex items-center justify-between lg:hidden border-b border-outline-variant/20 pb-3 mb-2">
+              <h3 className="text-sm font-bold text-on-surface uppercase tracking-wider">Tải bài viết</h3>
+              <button 
+                onClick={() => setIsUploadDrawerOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-surface-container-highest/60 text-on-surface-variant hover:text-on-surface transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+
             <div>
               <h2 className="text-lg font-bold text-on-surface mb-1">Tải bài viết bằng tệp tin</h2>
               <p className="text-xs text-on-surface-variant/70">Đăng nhanh bài viết bằng tệp HTML hoặc Markdown</p>
