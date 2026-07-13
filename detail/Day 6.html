@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 6: Multi-Agent Systems & LangGraph — Biến LLM Thành Cỗ Máy Trạng Thái (State Machine)</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        code {
+            background-color: #1a1a1a;
+            color: #EF9F27;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+            background: rgba(29, 158, 117, 0.05);
+            border-left: 4px solid #1D9E75;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Hai, 13/07/2026</span>
+        <h1>Day 6: Multi-Agent Systems & LangGraph — Biến LLM Thành Cỗ Máy Trạng Thái (State Machine)</h1>
+        <div class="tags">#MultiAgent #LangGraph #AgenticRAG #SystemOrchestration</div>
+    </header>
+
+    <main>
+        <p>Chào ông, tuần trước chúng ta đã trang bị cho hệ thống AI của ông khả năng ghi nhớ chuẩn xác (Context Engineering), suy luận logic (GraphRAG), và tự động chấm điểm (Evals). Hôm nay, ở Day 6, chúng ta sẽ bước vào cảnh giới cao nhất của kiến trúc AI hiện đại: <strong>Orchestration (Điều phối) thông qua hệ thống Đa tác tử (Multi-Agent System)</strong>.</p>
+
+        <p>Thực tế phũ phàng là: Hầu hết các lập trình viên khi mới làm AI đều viết code theo dạng tuyến tính (Linear Pipeline). Họ dùng các framework như LangChain cơ bản để nối các bước lại với nhau: <code>User Query &rarr; Retrieve (Tìm kiếm) &rarr; Prompt &rarr; LLM Generate &rarr; Output</code>. Kiến trúc này có một điểm yếu chí mạng: <strong>Nó không biết quay đầu</strong>.</p>
+
+        <p>Hãy tưởng tượng, ở bước Retrieve, thuật toán Vector Database bốc lên những tài liệu không liên quan (rác). Hệ thống tuyến tính vẫn cắm đầu nhồi đống rác đó vào LLM, và LLM sẽ sinh ra một câu trả lời bịa đặt (hallucination). Một cỗ máy chỉ biết tiến về phía trước mà không biết kiểm tra lại kết quả của chính mình thì không bao giờ có thể chạy an toàn trên môi trường production của doanh nghiệp.</p>
+
+        <h2>Sự Dịch Chuyển: Từ Pipeline Tuyến Tính Sang Đồ Thị Có Chu Trình (Cyclic Graph)</h2>
+        <p>Để giải quyết sự mong manh này, khái niệm <strong>Agentic RAG</strong> và các framework điều phối như <strong>LangGraph</strong> hoặc <strong>CrewAI</strong> ra đời. Sự khác biệt cốt lõi của LangGraph so với LangChain truyền thống là nó cho phép tạo ra các <em>luồng công việc có chu trình (cyclic workflows)</em>. Thay vì một đường thẳng, hệ thống của ông giờ đây hoạt động như một <strong>Máy trạng thái hữu hạn (Finite State Machine)</strong>.</p>
+
+        <p>Dưới góc độ kỹ thuật phần mềm, ông cần nắm vững 3 thành phần cấu trúc nên một hệ thống Multi-Agent thực thụ:</p>
+
+        <ul>
+            <li><strong>State (Trạng thái):</strong> Đây là bộ nhớ dùng chung của toàn bộ luồng. Trong Python, nó thường là một <code>TypedDict</code> chứa các mảng như <code>messages</code>, <code>documents</code>, <code>errors</code>. Mọi Agent (tác tử) trong hệ thống đều đọc từ State này, xử lý, và sau đó <em>ghi đè hoặc nối thêm</em> kết quả mới vào State.</li>
+            <li><strong>Nodes (Các Nút):</strong> Mỗi Node là một hàm Python hoặc một Sub-Agent đảm nhiệm một nghiệp vụ chuyên biệt. Chẳng hạn: Node <code>Retriever</code> chuyên tra cứu cơ sở dữ liệu; Node <code>Grader</code> chuyên đánh giá xem tài liệu lấy lên có khớp với câu hỏi không; Node <code>Generator</code> chuyên viết câu trả lời. Bằng cách chia nhỏ (Isolate), mỗi LLM call sẽ có một ngữ cảnh rất sạch sẽ và tập trung.</li>
+            <li><strong>Conditional Edges (Cạnh điều kiện):</strong> Đây chính là linh hồn của hệ thống. Thay vì chuyển thẳng từ Node A sang Node B, ông viết một hàm định tuyến (Router). Ví dụ: Sau khi Node <code>Retriever</code> chạy xong, luồng dữ liệu đi vào Node <code>Grader</code>. Nếu <code>Grader</code> chấm điểm tài liệu là "Tốt", cạnh điều kiện sẽ trỏ tới Node <code>Generator</code>. Nếu "Tệ", cạnh điều kiện sẽ kích hoạt vòng lặp: trỏ luồng quay ngược lại một Node <code>Query_Rewriter</code> để viết lại câu hỏi, rồi mới tìm kiếm lại từ đầu.</li>
+        </ul>
+
+        <h2>Khả Năng Tự Sửa Lỗi (Self-Correction): Sự Khác Biệt Trị Giá $300K</h2>
+        <p>Tại sao các công ty sẵn sàng trả lương cao cho kỹ sư thiết kế được kiến trúc này? Vì nó mang lại khả năng <strong>Self-Correction</strong>. Trong báo cáo nghiên cứu kỹ thuật tích hợp AI vào y tế mà ông từng đọc, họ áp dụng kiến trúc <em>Self-Reflective RAG</em> trên LangGraph. Sau khi LLM sinh ra câu trả lời y khoa, một tác tử độc lập sẽ được gọi lên chỉ để làm một việc: đối chiếu câu trả lời đó với dữ liệu gốc của Neo4j nhằm phát hiện lỗi "Accuracy Fallacy" (trả lời đúng lý thuyết nhưng sai bệnh án). Nếu phát hiện sai sót, hệ thống tự động loại bỏ câu trả lời, điều chỉnh prompt, và ra lệnh cho LLM sinh lại câu trả lời mới.</p>
+
+        <p>Hơn thế nữa, kiến trúc Multi-Agent còn cho phép ông triển khai mô hình <strong>Hierarchical Agents (Tác tử phân cấp)</strong>. Ông có thể tạo một "Agent Giám Đốc" (Supervisor) chuyên tiếp nhận yêu cầu từ người dùng. Giám đốc không tự làm, mà dựa vào ý định của câu hỏi để phân việc cho "Agent Nghiên Cứu" (đi cào dữ liệu Web), "Agent Kế Toán" (chạy lệnh SQL vào database tài chính), sau đó tổng hợp lại. Quá trình này mô phỏng chính xác cách một phòng ban thực tế hoạt động.</p>
+
+        <p>Đặc biệt, với tính năng <strong>State Persistence (Lưu trữ trạng thái)</strong> thông qua các bộ checkpoint như <code>SqliteSaver</code> của LangGraph, ông có thể tạm dừng toàn bộ đồ thị ở bất kỳ node nào. Điều này mở ra cơ chế <em>Human-in-the-loop (HITL)</em>. Ví dụ: Trước khi Agent Kế Toán thực thi lệnh chuyển tiền qua API, hệ thống tạm dừng, gửi tin báo cho một quản lý con người duyệt. Quản lý bấm "Approve", đồ thị tiếp tục chạy từ đúng trạng thái nó đang dừng. Không có LangGraph, ông sẽ phải tự code một mớ bòng bong quản lý session cực kỳ khổ sở.</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460" width="100%">
+            <defs>
+                <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c2c0b6"/>
+                </marker>
+                <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75"/>
+                </marker>
+                <marker id="arrow-coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#D85A30"/>
+                </marker>
+                <marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#EF9F27"/>
+                </marker>
+            </defs>
+
+            <!-- PART 1: LINEAR RAG (THE PROBLEM) -->
+            <text x="20" y="30" fill="#D85A30" font-size="14" font-weight="bold">1. Linear Pipeline (Dễ gãy, không biết quay đầu)</text>
+            <rect x="20" y="50" width="100" height="40" rx="6" fill="#111" stroke="#c2c0b6" stroke-width="1"/>
+            <text x="70" y="75" fill="#e8e6e0" font-size="12" text-anchor="middle">User Query</text>
+
+            <path d="M 120 70 L 160 70" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+            
+            <rect x="170" y="50" width="120" height="40" rx="6" fill="rgba(216, 90, 48, 0.1)" stroke="#D85A30" stroke-width="2"/>
+            <text x="230" y="75" fill="#D85A30" font-size="12" text-anchor="middle">Retriever (Rác)</text>
+
+            <path d="M 290 70 L 330 70" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-coral)"/>
+
+            <rect x="340" y="50" width="120" height="40" rx="6" fill="#111" stroke="#c2c0b6" stroke-width="1"/>
+            <text x="400" y="75" fill="#e8e6e0" font-size="12" text-anchor="middle">LLM Generator</text>
+
+            <path d="M 460 70 L 500 70" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-coral)"/>
+
+            <rect x="510" y="50" width="140" height="40" rx="6" fill="rgba(216, 90, 48, 0.2)" stroke="#D85A30" stroke-width="2"/>
+            <text x="580" y="75" fill="#e8e6e0" font-size="12" text-anchor="middle">Ảo giác (Hallucination)</text>
+
+            <line x1="20" y1="110" x2="660" y2="110" stroke="#333" stroke-width="1" stroke-dasharray="5"/>
+
+            <!-- PART 2: AGENTIC RAG (THE SOLUTION) -->
+            <text x="20" y="140" fill="#1D9E75" font-size="14" font-weight="bold">2. Agentic Workflow với LangGraph (Máy trạng thái, Tự sửa lỗi)</text>
+
+            <!-- State Object -->
+            <rect x="20" y="160" width="630" height="270" rx="12" fill="rgba(124, 106, 247, 0.03)" stroke="#7c6af7" stroke-width="2" stroke-dasharray="4"/>
+            <text x="335" y="185" fill="#7c6af7" font-size="14" font-weight="bold" text-anchor="middle">Graph State (Bộ nhớ dùng chung)</text>
+
+            <!-- Nodes & Edges -->
+            <rect x="40" y="220" width="90" height="40" rx="6" fill="#111" stroke="#c2c0b6" stroke-width="1"/>
+            <text x="85" y="245" fill="#e8e6e0" font-size="12" text-anchor="middle">Input Node</text>
+
+            <path d="M 130 240 L 170 240" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <!-- Retriever Node -->
+            <rect x="180" y="220" width="100" height="40" rx="6" fill="rgba(29, 158, 117, 0.1)" stroke="#1D9E75" stroke-width="2"/>
+            <text x="230" y="245" fill="#1D9E75" font-size="12" font-weight="bold" text-anchor="middle">Retriever</text>
+
+            <path d="M 280 240 L 320 240" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <!-- Relevance Grader (Condition) -->
+            <polygon points="360,210 400,240 360,270 320,240" fill="rgba(239, 159, 39, 0.1)" stroke="#EF9F27" stroke-width="2"/>
+            <text x="360" y="245" fill="#EF9F27" font-size="11" text-anchor="middle">Relevance</text>
+            <text x="360" y="258" fill="#EF9F27" font-size="11" text-anchor="middle">Grader</text>
+
+            <!-- Rewrite Loop -->
+            <path d="M 360 210 L 360 170 L 230 170 L 230 210" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-coral)"/>
+            <rect x="250" y="160" width="80" height="20" rx="4" fill="#111"/>
+            <text x="290" y="174" fill="#D85A30" font-size="10" text-anchor="middle">Fail (Rewrite)</text>
+
+            <!-- Success Path to Generator -->
+            <path d="M 400 240 L 450 240" fill="none" stroke="#1D9E75" stroke-width="2" marker-end="url(#arrow-teal)"/>
+            <text x="425" y="235" fill="#1D9E75" font-size="10" text-anchor="middle">Pass</text>
+
+            <!-- Generator Node -->
+            <rect x="460" y="220" width="100" height="40" rx="6" fill="rgba(29, 158, 117, 0.1)" stroke="#1D9E75" stroke-width="2"/>
+            <text x="510" y="245" fill="#1D9E75" font-size="12" font-weight="bold" text-anchor="middle">Generator</text>
+
+            <path d="M 510 260 L 510 290" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-gray)"/>
+
+            <!-- Hallucination Grader (Condition) -->
+            <polygon points="510,300 550,330 510,360 470,330" fill="rgba(239, 159, 39, 0.1)" stroke="#EF9F27" stroke-width="2"/>
+            <text x="510" y="325" fill="#EF9F27" font-size="11" text-anchor="middle">Fact</text>
+            <text x="510" y="340" fill="#EF9F27" font-size="11" text-anchor="middle">Checker</text>
+
+            <!-- Hallucination Loop -->
+            <path d="M 470 330 L 430 330 L 430 260 L 460 260" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-coral)"/>
+            <rect x="390" y="285" width="80" height="20" rx="4" fill="#111"/>
+            <text x="430" y="299" fill="#D85A30" font-size="10" text-anchor="middle">Hallucinated</text>
+
+            <!-- Final Success Path -->
+            <path d="M 550 330 L 610 330" fill="none" stroke="#1D9E75" stroke-width="2" marker-end="url(#arrow-teal)"/>
+            <text x="580" y="325" fill="#1D9E75" font-size="10" text-anchor="middle">Grounded</text>
+
+            <!-- Final Output -->
+            <rect x="620" y="310" width="20" height="40" rx="4" fill="#1D9E75"/>
+            <text x="630" y="335" fill="#0f0f0f" font-size="14" font-weight="bold" text-anchor="middle">OK</text>
+
+            <!-- Human in the loop indicator -->
+            <circle cx="510" cy="380" r="15" fill="none" stroke="#7c6af7" stroke-width="2" stroke-dasharray="3"/>
+            <text x="510" y="384" fill="#7c6af7" font-size="12" text-anchor="middle">🙎‍♂️</text>
+            <text x="510" y="410" fill="#7c6af7" font-size="11" text-anchor="middle">HITL Checkpoint</text>
+            <path d="M 510 360 L 510 365" fill="none" stroke="#7c6af7" stroke-width="1"/>
+
+        </svg>
+        <div class="diagram-caption">Sơ đồ: So sánh Pipeline Tuyến tính và Agentic Workflow. Các "Grader" đóng vai trò là Cạnh điều kiện (Conditional Edges) để tạo ra các chu trình tự sửa lỗi (Self-Correction) trước khi xuất kết quả cuối cùng.</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~15-18 phút)</h3>
+        <p>Đừng vội mở IDE ra code LangGraph ngay. Hệ thống Đa tác tử chết ở khâu thiết kế logic, không phải ở cú pháp code. Hãy lấy giấy bút hoặc mở một file Draw.io, lấy một quy trình AI ông đang làm (ví dụ: Chatbot trả lời tài liệu) và vẽ lại nó dưới dạng <strong>Máy trạng thái (State Machine)</strong>:</p>
+        <ol>
+            <li><strong>Định nghĩa State:</strong> Viết ra cấu trúc biến dùng chung. Ví dụ: <code>{"question": string, "documents": list, "generation": string, "retry_count": int}</code>.</li>
+            <li><strong>Định nghĩa Nodes:</strong> Liệt kê các hàm xử lý độc lập. (Node 1: Search DB. Node 2: Đánh giá tài liệu. Node 3: Sinh câu trả lời).</li>
+            <li><strong>Thiết lập "Circuit Breaker" (Cầu dao ngắt mạch):</strong> Vẽ một cạnh điều kiện (If/Else). Nếu Node 2 chê tài liệu tệ, quay lại Node 1. <em>Quan trọng:</em> Thêm điều kiện <code>If retry_count > 3</code> thì ép luồng chuyển sang một Node báo lỗi "Tôi không tìm thấy thông tin" thay vì để hệ thống kẹt trong vòng lặp vô tận đốt sạch tiền API của ông.</li>
+        </ol>
+        <p>Việc tư duy rõ ràng các đường đi (Edges) và điểm ngắt (Checkpoints) trên giấy sẽ giúp ông tiết kiệm hàng giờ debug khi thực sự gõ code.</p>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Trong một hệ thống Multi-Agent, khi "Agent Coder" viết code và "Agent Tester" liên tục báo lỗi khiến đồ thị lặp lại vô tận (Infinite Loop), ngoài việc đặt biến đếm (retry count), ông sẽ thiết kế cấu trúc prompt của Agent Tester như thế nào để nó không chỉ "chê" mà còn mớm đúng thông tin giúp Agent Coder thoát khỏi bế tắc ở vòng lặp tiếp theo?</p>
+        </div>
+        <div class="sources">
+            Nguồn tham khảo: Rút trích từ "LangGraph RAG: Build Agentic Retrieval‑Augmented Generation", "Mastering LangGraph: The Backbone of Stateful Multi-Agent AI", và "Multi Agent System (Hệ thống đa AI Agents) là gì?".
+        </div>
+    </footer>
+</body>
+</html>
