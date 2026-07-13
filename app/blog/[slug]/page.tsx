@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getSortedPostsData, getPostData, getNextPost, getPreviousPost } from '@/lib/posts';
 import MermaidRenderer from '@/app/components/MermaidRenderer';
 import PrintButton from '@/app/components/PrintButton';
+import ReadingToolbar from '@/app/components/ReadingToolbar';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -169,6 +170,62 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
+        /* Blog tag styling */
+        .blog-tag {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.35rem 0.85rem;
+          font-family: var(--font-body);
+          font-size: 0.75rem;
+          font-weight: 500;
+          border-radius: 9999px;
+          background: rgba(124, 106, 247, 0.05);
+          border: 1px solid rgba(124, 106, 247, 0.15);
+          color: var(--primary);
+          transition: all 0.2s ease;
+          backdrop-filter: blur(4px);
+        }
+        .blog-tag:hover {
+          background: rgba(124, 106, 247, 0.12);
+          border-color: rgba(124, 106, 247, 0.3);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(124, 106, 247, 0.15);
+        }
+        [data-theme="dark"] .blog-tag {
+          background: rgba(124, 106, 247, 0.08);
+          border-color: rgba(124, 106, 247, 0.2);
+        }
+        [data-theme="light"] .blog-tag {
+          background: rgba(124, 106, 247, 0.04);
+          border-color: rgba(124, 106, 247, 0.15);
+        }
+
+        /* Focus mode rules */
+        body.focus-mode header,
+        body.focus-mode footer,
+        body.focus-mode nav,
+        body.focus-mode section.grid,
+        body.focus-mode .print-btn {
+          display: none !important;
+          opacity: 0;
+          pointer-events: none;
+        }
+        body.focus-mode main {
+          padding-top: 4rem !important;
+          padding-bottom: 4rem !important;
+        }
+
+        /* Font size level overrides */
+        .post-content.text-large {
+          font-size: 1.15rem !important;
+        }
+        .post-content.text-xlarge {
+          font-size: 1.3rem !important;
+        }
+        .post-content.text-normal {
+          font-size: 1rem !important;
+        }
+
         @media print {
           /* Color & Ink optimizations */
           body {
@@ -315,7 +372,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </h1>
             <div className="flex flex-wrap gap-2 mb-12">
               {(post.tags || []).map((tag) => (
-                <span key={tag} className="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-xs">
+                <span key={tag} className="blog-tag">
                   #{tag}
                 </span>
               ))}
@@ -323,20 +380,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </header>
 
           {/* Reading Toolbar */}
-          <aside className="fixed right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-4 p-3 glass-panel rounded-full shadow-xl">
-            <button className="p-3 rounded-full hover:bg-surface-variant/50 text-on-surface-variant transition-all" title="Cỡ chữ">
-              <span className="material-symbols-outlined">text_fields</span>
-            </button>
-            <button className="p-3 rounded-full hover:bg-surface-variant/50 text-on-surface-variant transition-all" title="Chủ đề">
-              <span className="material-symbols-outlined">dark_mode</span>
-            </button>
-            <button className="p-3 rounded-full hover:bg-surface-variant/50 text-on-surface-variant transition-all" title="Chế độ tập trung">
-              <span className="material-symbols-outlined">center_focus_strong</span>
-            </button>
-            <button className="p-3 rounded-full hover:bg-surface-variant/50 text-on-surface-variant transition-all" title="Đánh dấu">
-              <span className="material-symbols-outlined">bookmark</span>
-            </button>
-          </aside>
+          <ReadingToolbar postSlug={post.slug} />
 
           {/* Body Content */}
           <div 
