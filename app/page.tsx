@@ -2,6 +2,8 @@ import React from 'react';
 import { getSortedPostsData } from '@/lib/posts';
 import BlogInsights from './components/BlogInsights';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const posts = getSortedPostsData();
 

@@ -23,6 +23,7 @@ const BlogInsights = ({ posts }: BlogInsightsProps) => {
   const [selectedTag, setSelectedTag] = useState('All');
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   if (!posts || posts.length === 0) {
     return (
@@ -75,6 +76,8 @@ const BlogInsights = ({ posts }: BlogInsightsProps) => {
       ? new Date(b.date).getTime() - new Date(a.date).getTime()
       : new Date(a.date).getTime() - new Date(b.date).getTime();
   });
+
+  const displayedPosts = showAll ? sortedPosts : sortedPosts.slice(0, 5);
 
   return (
     <div className="ai-up-insights">
@@ -161,7 +164,7 @@ const BlogInsights = ({ posts }: BlogInsightsProps) => {
 
       {/* Articles Grid */}
       <div className="articles-grid">
-        {sortedPosts.map((article, index) => (
+        {displayedPosts.map((article, index) => (
           <article key={article.slug} className="article-card-wrapper">
             <Link href={`/blog/${article.slug}`} className="article-card-link">
               <div className="article-card card-glow">
@@ -195,12 +198,17 @@ const BlogInsights = ({ posts }: BlogInsightsProps) => {
       </div>
 
       {/* Load More Button */}
-      <div className="load-more-container">
-        <button className="load-more-btn">
-          <span>View All Articles</span>
-          <span className="material-symbols-outlined arrow-icon">arrow_forward</span>
-        </button>
-      </div>
+      {!showAll && sortedPosts.length > 5 && (
+        <div className="load-more-container">
+          <button 
+            className="load-more-btn"
+            onClick={() => setShowAll(true)}
+          >
+            <span>View All Articles</span>
+            <span className="material-symbols-outlined arrow-icon">arrow_forward</span>
+          </button>
+        </div>
+      )}
 
       <style jsx>{`
         .ai-up-insights {
