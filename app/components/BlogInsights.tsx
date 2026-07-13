@@ -59,6 +59,23 @@ const BlogInsights = ({ posts }: BlogInsightsProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Focus search input if URL contains ?focus=search
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('focus') === 'search') {
+      const searchInput = document.querySelector('input.search-input') as HTMLInputElement;
+      if (searchInput) {
+        setTimeout(() => {
+          searchInput.focus();
+          searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+      // Remove query param from URL
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }, []);
+
   // Sort toggle
   const handleSortToggle = () => {
     setSortOrder(sortOrder === 'latest' ? 'oldest' : 'latest');

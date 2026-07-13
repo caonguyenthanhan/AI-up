@@ -381,7 +381,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </header>
 
           {/* Reading Toolbar */}
-          <ReadingToolbar postSlug={post.slug} />
+          <ReadingToolbar postSlug={post.slug} postTitle={post.title} />
           <ReadingProgressTracker postSlug={post.slug} postTitle={post.title} />
 
           {/* Body Content */}
@@ -437,22 +437,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <p className="font-label-md text-xs text-outline tracking-wider uppercase">Built with Next.js & Vercel</p>
         </div>
       </footer>
-
-      {/* Bottom Navigation Bar (Mobile only) */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 md:hidden bg-surface-container-low/80 backdrop-blur-xl border-t border-outline-variant/30">
-        <Link href="/" className="flex items-center justify-center bg-primary-container text-on-primary-container rounded-full p-3 active:scale-90 transition-transform">
-          <span className="material-symbols-outlined">home</span>
-        </Link>
-        <a href="#" className="flex items-center justify-center text-on-surface-variant p-3 hover:bg-surface-variant/50 transition-all active:scale-90">
-          <span className="material-symbols-outlined">search</span>
-        </a>
-        <a href="#" className="flex items-center justify-center text-on-surface-variant p-3 hover:bg-surface-variant/50 transition-all active:scale-90">
-          <span className="material-symbols-outlined">bookmarks</span>
-        </a>
-        <a href="#" className="flex items-center justify-center text-on-surface-variant p-3 hover:bg-surface-variant/50 transition-all active:scale-90">
-          <span className="material-symbols-outlined">settings</span>
-        </a>
-      </nav>
 
       <script>{`
         // Reading Progress Script

@@ -293,8 +293,17 @@ export default function UserAccountModal() {
           border-radius: 1.25rem;
           display: flex;
           flex-direction: column;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
           animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          background: rgba(15, 15, 20, 0.96) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(24px) !important;
+        }
+
+        [data-theme="light"] .user-dropdown-modal {
+          background: rgba(255, 255, 255, 0.98) !important;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
         @keyframes slideDown {

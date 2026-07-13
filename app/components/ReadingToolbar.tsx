@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 
 interface ReadingToolbarProps {
   postSlug: string;
+  postTitle: string;
 }
 
-export default function ReadingToolbar({ postSlug }: ReadingToolbarProps) {
+export default function ReadingToolbar({ postSlug, postTitle }: ReadingToolbarProps) {
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [focusMode, setFocusMode] = useState(false);
@@ -14,13 +15,20 @@ export default function ReadingToolbar({ postSlug }: ReadingToolbarProps) {
 
   // Load initial states from DOM and localStorage
   useEffect(() => {
-    // 1. Theme
-    const activeTheme = document.documentElement.getAttribute('data-theme') as 'dark' | 'light' || 'dark';
-    setTheme(activeTheme);
+    const loadState = () => {
+      // 1. Theme
+      const activeTheme = document.documentElement.getAttribute('data-theme') as 'dark' | 'light' || 'dark';
+      setTheme(activeTheme);
 
-    // 2. Bookmarks
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-    setIsBookmarked(bookmarks.includes(postSlug));
+      // 2. Bookmarks
+      const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+      setIsBookmarked(bookmarks.includes(postSlug));
+    };
+
+    loadState();
+
+    // Listen to storage events to keep state in sync
+    window.addEventListener('storage', loadState);
 
     // 3. Listen to document theme change (if changes from header button)
     const observer = new MutationObserver((mutations) => {
@@ -33,7 +41,10 @@ export default function ReadingToolbar({ postSlug }: ReadingToolbarProps) {
     });
     observer.observe(document.documentElement, { attributes: true });
 
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener('storage', loadState);
+      observer.disconnect();
+    };
   }, [postSlug]);
 
   // Handle Font Size toggle
@@ -84,6 +95,7 @@ export default function ReadingToolbar({ postSlug }: ReadingToolbarProps) {
 
   // Handle Bookmark Toggle
   const toggleBookmark = () => {
+    // 1. Update simple slugs list
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
     let newBookmarks = [...bookmarks];
     if (isBookmarked) {
@@ -94,6 +106,19 @@ export default function ReadingToolbar({ postSlug }: ReadingToolbarProps) {
       setIsBookmarked(true);
     }
     localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
+
+    // 2. Update descriptive bookmarks_data list (with titles)
+    const bookmarksData = JSON.parse(localStorage.getItem('bookmarks_data') || '[]');
+    let newBookmarksData = [...bookmarksData];
+    if (isBookmarked) {
+      newBookmarksData = newBookmarksData.filter((item: any) => item.slug !== postSlug);
+    } else {
+      newBookmarksData.push({ slug: postSlug, title: postTitle });
+    }
+    localStorage.setItem('bookmarks_data', JSON.stringify(newBookmarksData));
+
+    // Trigger storage event to notify other components (like BottomNavBar)
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (
