@@ -5,6 +5,7 @@ import { getSortedPostsData, getPostData, getNextPost, getPreviousPost } from '@
 import MermaidRenderer from '@/app/components/MermaidRenderer';
 import PrintButton from '@/app/components/PrintButton';
 import ReadingToolbar from '@/app/components/ReadingToolbar';
+import ReadingProgressTracker from '@/app/components/ReadingProgressTracker';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -381,6 +382,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* Reading Toolbar */}
           <ReadingToolbar postSlug={post.slug} />
+          <ReadingProgressTracker postSlug={post.slug} postTitle={post.title} />
 
           {/* Body Content */}
           <div 

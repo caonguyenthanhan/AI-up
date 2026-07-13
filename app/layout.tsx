@@ -3,6 +3,7 @@ import "./globals.css";
 import React from "react";
 import BottomNavBar from "./components/BottomNavBar";
 import ThemeToggle from "./components/ThemeToggle";
+import UserAccountModal from "./components/UserAccountModal";
 
 export const metadata: Metadata = {
   title: "AI-up Insights | AI Engineering & Learning Blog",
@@ -63,6 +64,7 @@ export default function RootLayout({
               </div>
               <div className="flex items-center gap-4">
                 <ThemeToggle />
+                <UserAccountModal />
                 <a
                   href="https://github.com/caonguyenthanhan/AI-up"
                   target="_blank"
