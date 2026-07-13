@@ -35,7 +35,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <>
       <style>{`
         body {
-          background-color: #0a0a0f;
+          background-color: var(--background);
           color: #e4e1e9;
           scroll-behavior: smooth;
         }
