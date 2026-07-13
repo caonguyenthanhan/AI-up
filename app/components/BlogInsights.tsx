@@ -287,8 +287,8 @@ const BlogInsights = ({ posts }: BlogInsightsProps) => {
 
         .tag-btn:not(.active) {
           background: transparent;
-          border: 1px solid rgba(192, 193, 255, 0.3);
-          color: rgba(192, 193, 255, 0.5);
+          border: 1px solid var(--outline-variant);
+          color: var(--on-surface-variant);
         }
 
         .tag-btn:not(.active):hover {
