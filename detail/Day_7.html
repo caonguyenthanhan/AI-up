@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 7: Skill-Master — Vì Sao Một Hệ Sinh Thái AI Cần Bộ Não Điều Phối?</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        code {
+            background-color: #1a1a1a;
+            color: #EF9F27;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.7rem 0.8rem;
+            border: 1px solid #333;
+            vertical-align: top;
+        }
+        th {
+            color: #7c6af7;
+            font-weight: 500;
+            background: rgba(124,106,247,0.06);
+        }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+            background: rgba(29, 158, 117, 0.05);
+            border-left: 4px solid #1D9E75;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Ba, 14/07/2026</span>
+        <h1>Day 7: Skill-Master — Vì Sao Một Hệ Sinh Thái AI Cần Bộ Não Điều Phối?</h1>
+        <div class="tags">#SkillMaster #SSOT #AgentOrchestration #KnowledgeArchitecture</div>
+    </header>
+
+    <main>
+        <p>Chào ông, sáu ngày qua ta đã trang bị từng năng lực kỹ thuật riêng lẻ: Context Engineering (Day 1), GraphRAG (Day 2), Evals (Day 3), PDPA (Day 4), Spec-driven Prompting (Day 5), Multi-Agent (Day 6). Mỗi kỹ thuật đó, khi triển khai thật, thường được đóng gói thành một <strong>skill</strong> — một file quy tắc mà AI IDE (Trae, Cursor, Claude Code...) đọc để biết cách hành xử trong một tình huống cụ thể.</p>
+
+        <p>Vấn đề nảy sinh khi ông không chỉ có 1-2 skill, mà có <strong>67 skill</strong> trải trên nhiều dự án, nhiều tầng. Đây chính là tình huống thật của ông: 34 skill ở tầng Global (dùng chung mọi dự án, ký hiệu An-tool), 16 skill ở tầng Project riêng cho dự án RFI, và 17 skill khác còn chưa được ghi nhận ở đâu cả. Khi số lượng vượt quá trí nhớ làm việc của con người (thường là 7±2 mục), ông rơi vào đúng cái bẫy mà Context Engineering ở Day 1 đã cảnh báo — nhưng lần này bẫy đó không nằm trong bộ nhớ của Agent, mà nằm trong <span class="highlight">bộ nhớ của chính ông</span>.</p>
+
+        <h2>Bài Toán "Quản Lý Cái Quản Lý" (Meta-Orchestration)</h2>
+        <p>Không có một điểm tra cứu trung tâm, ba sự cố sẽ xảy ra gần như chắc chắn theo thời gian:</p>
+        <ul>
+            <li><strong>Trùng lặp âm thầm:</strong> Ông tạo skill mới cho dự án RFI mà không biết Global đã có bản tương tự (ví dụ <code>rag-engineering</code> tồn tại ở cả hai tầng) — hai nguồn sự thật (source of truth) bắt đầu trôi dạt khỏi nhau.</li>
+            <li><strong>Mất dấu override:</strong> Một skill project-tier tinh chỉnh từ bản global nhưng không khai báo rõ ràng — người đọc sau này (kể cả chính ông sau 3 tháng) không biết đây là bản độc lập hay bản kế thừa.</li>
+            <li><strong>AI IDE chọn sai skill:</strong> Khi cả hai tầng đều có skill trùng tên, chính AI IDE cũng có thể đọc nhầm bản global thay vì bản project đã được tinh chỉnh riêng — lỗi này khó phát hiện vì output vẫn "nhìn có vẻ đúng".</li>
+        </ul>
+
+        <p><code>skill-master</code> ra đời để giải quyết đúng ba sự cố đó. Nó không phải một skill thứ 68 làm thêm một việc chuyên môn nào — nó là <strong>lớp điều phối (orchestration layer)</strong> nằm phía trên toàn bộ 67 skill kia. Vai trò của nó giống hệt vai trò một cuốn <em>index</em> ở cuối sách kỹ thuật: không chứa nội dung, nhưng là con đường ngắn nhất để tìm đúng nội dung.</p>
+
+        <h2>Hai Kênh Sử Dụng — Vì Sao skill-master Phải "Hiểu" Cả Hai</h2>
+        <p>Điều tinh tế mà nhiều tài liệu điều phối bỏ sót: ông không tương tác với hệ sinh thái skill theo một cách duy nhất. Có hai kênh hoàn toàn khác nhau, và <code>skill-master</code> phải phục vụ đúng vai trò riêng cho từng kênh:</p>
+
+        <table>
+            <tr><th>Kênh</th><th>Ai gõ lệnh</th><th>Vai trò của skill-master</th></tr>
+            <tr><td><strong>Kênh 1</strong></td><td>Ông tự gõ prompt trực tiếp cho AI IDE (Claude Code, Cursor, Trae)</td><td>Một checklist tư duy ông <em>nội tâm hóa</em> — tự vận hành đúng quy trình mà không cần mở tài liệu ra đọc</td></tr>
+            <tr><td><strong>Kênh 2</strong></td><td>Ông nhờ Claude (chat này) soạn prompt hộ</td><td>Một bản đồ tra cứu <em>bắt buộc Claude phải quét qua</em> trước khi viết bất kỳ prompt nào, để chọn đúng skill + đúng tầng</td></tr>
+        </table>
+
+        <p>Nói cách khác: cùng một tài liệu, nhưng ở Kênh 1 nó là thứ ông ghi nhớ, còn ở Kênh 2 nó là thứ Claude phải tra cứu thay ông. Nhầm lẫn vai trò này là lý do phổ biến khiến các tài liệu điều phối trở nên vô dụng — người viết ra một bản chỉ để đọc-hiểu, trong khi nhu cầu thật là một bản để-tra-cứu-máy-móc.</p>
+
+        <h2>Cơ Chế Cốt Lõi: Hai Tầng Global ↔ Project, Nối Bằng Một Từ Khóa</h2>
+        <p>Toàn bộ hệ sinh thái vận hành trên nguyên tắc thừa kế đơn giản: <strong>Global là baseline, Project override khi cần đặc thù</strong>. Một skill dự án RFI không viết lại từ đầu nếu bản Global đã đủ tốt — nó chỉ khai báo mình <em>kế thừa</em> từ đâu, rồi chỉ mô tả phần khác biệt.</p>
+
+        <p>Từ khóa nối hai tầng lại với nhau là field <code>extends</code> trong frontmatter của skill. Đây là quy ước <strong>bắt buộc nhưng hiện đang bị bỏ sót</strong> ở chính hệ thống của ông: skill <code>project-structure-guard</code> (RFI) có mục đích trùng khớp cao với <code>project-structure</code> (Global) — cả hai đều lo chuẩn hoá cấu trúc thư mục — nhưng frontmatter của nó chưa khai báo <code>extends: "project-structure"</code>. Thiếu dòng đó, <code>skill-master</code> không có cách nào phân biệt: đây là bản tinh chỉnh hợp lệ, hay là một bản sao chép tay đang âm thầm trôi dạt khỏi bản gốc?</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380" width="100%">
+            <defs>
+                <marker id="arrow-purple7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c6af7"/>
+                </marker>
+                <marker id="arrow-teal7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#1D9E75"/>
+                </marker>
+                <marker id="arrow-amber7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#EF9F27"/>
+                </marker>
+            </defs>
+
+            <text x="340" y="28" fill="#e8e6e0" font-size="14" font-weight="600" text-anchor="middle">Cơ Chế Hai Tầng — Nối Bằng "extends"</text>
+
+            <!-- Global layer -->
+            <rect x="60" y="55" width="560" height="70" rx="10" fill="rgba(124,106,247,0.08)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="90" y="80" fill="#7c6af7" font-size="13" font-weight="600">TẦNG GLOBAL (An-tool, .trae/skills/)</text>
+            <text x="90" y="102" fill="#c2c0b6" font-size="11">34 skill — baseline áp dụng cho MỌI dự án</text>
+            <rect x="440" y="70" width="160" height="35" rx="5" fill="#111" stroke="#7c6af7" stroke-width="1.5"/>
+            <text x="520" y="92" fill="#e8e6e0" font-size="11" text-anchor="middle">project-structure</text>
+
+            <path d="M 340 125 L 340 155" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-purple7)"/>
+            <text x="420" y="145" fill="#7c6af7" font-size="11" text-anchor="middle">override khi cần đặc thù</text>
+
+            <!-- Project layer -->
+            <rect x="60" y="165" width="560" height="70" rx="10" fill="rgba(29,158,117,0.06)" stroke="#1D9E75" stroke-width="2"/>
+            <text x="90" y="190" fill="#1D9E75" font-size="13" font-weight="600">TẦNG PROJECT (RFI, .gemini/config/skills/)</text>
+            <text x="90" y="212" fill="#c2c0b6" font-size="11">16 skill — chỉ áp dụng trong 1 dự án cụ thể</text>
+            <rect x="400" y="180" width="200" height="35" rx="5" fill="#111" stroke="#EF9F27" stroke-width="1.5" stroke-dasharray="4"/>
+            <text x="500" y="202" fill="#EF9F27" font-size="11" text-anchor="middle">project-structure-guard</text>
+
+            <path d="M 500 180 C 480 160, 480 110, 500 105" fill="none" stroke="#EF9F27" stroke-width="2" stroke-dasharray="3" marker-end="url(#arrow-amber7)"/>
+            <text x="640" y="150" fill="#EF9F27" font-size="10" text-anchor="middle">extends:</text>
+            <text x="640" y="163" fill="#EF9F27" font-size="10" text-anchor="middle">còn thiếu!</text>
+
+            <path d="M 340 235 L 340 265" fill="none" stroke="#1D9E75" stroke-width="2" marker-end="url(#arrow-teal7)"/>
+
+            <!-- AI IDE execution -->
+            <rect x="140" y="275" width="400" height="60" rx="10" fill="rgba(15,15,15,1)" stroke="#c2c0b6" stroke-width="1.5"/>
+            <text x="340" y="300" fill="#e8e6e0" font-size="12" font-weight="600" text-anchor="middle">AI IDE THỰC THI</text>
+            <text x="340" y="320" fill="#c2c0b6" font-size="10" text-anchor="middle">đọc Project trước → fallback Global nếu Project không override</text>
+
+            <text x="340" y="360" fill="#D85A30" font-size="11" text-anchor="middle" font-style="italic">Thiếu "extends" = AI IDE không biết đây là 2 skill độc lập hay 1 skill bị trôi dạt</text>
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Global là nền, Project override khi cần. Field "extends" là sợi dây duy nhất nối hai tầng — thiếu nó, hệ thống mất khả năng phân biệt "tinh chỉnh có chủ đích" và "trôi dạt cấu hình".</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~10-12 phút)</h3>
+        <p>Đừng vội mở bảng chỉ mục 50 skill (ta sẽ vào phần đó ở Day 8). Hôm nay chỉ cần luyện đúng một phản xạ: <strong>phân biệt tầng trước khi hành động</strong>.</p>
+        <ol>
+            <li>Chọn 1 skill ông đang dùng thường xuyên nhất trong dự án RFI.</li>
+            <li>Tự hỏi: skill này có tồn tại một bản tương ứng ở tầng Global không? (Gợi ý: nhìn tên — nếu trùng hệt hoặc rất giống tên một skill Global, khả năng cao là có.)</li>
+            <li>Nếu có, mở frontmatter của bản Project — kiểm tra đã có field <code>extends</code> chưa. Nếu chưa, đây chính là một dòng nợ kỹ thuật ông vừa tự phát hiện được, sẽ xử lý cụ thể ở Day 9.</li>
+        </ol>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Nếu một skill project-tier không khai báo <code>extends</code> dù mục đích trùng >70% với một skill Global, và cả hai đang được dùng song song trong thực tế — ông sẽ chọn hợp nhất chúng thành một bản duy nhất, hay giữ nguyên hai bản độc lập nhưng đổi tên để tránh nhầm lẫn? Đánh đổi giữa hai lựa chọn đó nằm ở đâu?</p>
+        </div>
+        <div class="sources">
+            Nguồn tài liệu: Tổng hợp và biên soạn dựa trên tài liệu vận hành nội bộ "skill-master" (An-tool ↔ RFI), đối chiếu với nguyên tắc Context Engineering (Day 1) và Spec-driven Prompting (Day 5) đã đề cập trong loạt bài này.
+        </div>
+    </footer>
+</body>
+</html>
