@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 8: Đọc Bảng Chỉ Mục Như Một Kỹ Sư — Học Cách Tra, Không Học Thuộc</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        code {
+            background-color: #1a1a1a;
+            color: #EF9F27;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.88rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.7rem 0.8rem;
+            border: 1px solid #333;
+            vertical-align: top;
+        }
+        th {
+            color: #7c6af7;
+            font-weight: 500;
+            background: rgba(124,106,247,0.06);
+        }
+        .callout {
+            background: rgba(216, 90, 48, 0.07);
+            border: 1px solid rgba(216, 90, 48, 0.35);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .callout strong { color: #D85A30; }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+            background: rgba(29, 158, 117, 0.05);
+            border-left: 4px solid #1D9E75;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Tư, 15/07/2026</span>
+        <h1>Day 8: Đọc Bảng Chỉ Mục Như Một Kỹ Sư — Học Cách Tra, Không Học Thuộc</h1>
+        <div class="tags">#SkillMaster #KnowledgeMap #ConfigDrift #LookupSkill</div>
+    </header>
+
+    <main>
+        <p>Chào ông, Day 7 ta đã hiểu <em>vì sao</em> cần <code>skill-master</code>: nó là lớp điều phối phía trên 67 skill, phục vụ hai kênh sử dụng khác nhau, vận hành trên cơ chế hai tầng Global ↔ Project nối bằng <code>extends</code>. Hôm nay ta học <em>cách dùng</em> nó — cụ thể là cách đọc bảng chỉ mục.</p>
+
+        <div class="callout">
+            <strong>Lưu ý trước khi đọc tiếp:</strong> Bài này <em>không</em> liệt kê lại cả 50 skill (34 Global + 16 Project). Đó là việc của tài liệu gốc <code>skill-master.md</code> — nó đóng vai trò một cuốn từ điển tra cứu, ông mở ra khi cần chứ không đọc từ đầu đến cuối. Nhiệm vụ của bài học này là dạy ông <strong>kỹ năng đọc một dòng trong bảng</strong>, để khi mở tài liệu gốc, ông tra trong 10 giây thay vì lướt cả trang.
+        </div>
+
+        <h2>Giải Phẫu Một Dòng Trong Bảng</h2>
+        <p>Mỗi dòng trong bảng chỉ mục Global chỉ có 3 cột, nhưng 3 cột này trả lời đủ 3 câu hỏi ông cần khi đứng trước một tác vụ: <strong>"Việc này tên gì, để làm gì, và khi nào tôi mở nó ra?"</strong> Lấy 3 dòng thật từ 3 nhóm khác nhau làm ví dụ:</p>
+
+        <table>
+            <tr><th>Skill</th><th>Mục đích 1 dòng</th><th>Kích hoạt khi</th></tr>
+            <tr>
+                <td><code>ai-system-architect</code><br><span style="color:#c2c0b6;font-size:0.8em">Nhóm A — Kiến trúc & Agent</span></td>
+                <td>Bóc tách nghiệp vụ → luồng xử lý/routing, scaffold dự án</td>
+                <td>Bắt đầu dự án mới hoặc tính năng lớn</td>
+            </tr>
+            <tr>
+                <td><code>issue-intake-checklist</code> ⭐<br><span style="color:#c2c0b6;font-size:0.8em">Nhóm B — Quản trị ngữ cảnh</span></td>
+                <td>Gate bắt buộc trước fix (Phần A) + Knowledge Test trước bàn giao (Phần B)</td>
+                <td>Trước khi sửa bug / trước khi bàn giao</td>
+            </tr>
+            <tr>
+                <td><code>llm-appsec-governance</code><br><span style="color:#c2c0b6;font-size:0.8em">Nhóm C — Full-stack & bảo vệ hệ thống</span></td>
+                <td>Chống prompt injection, bảo mật PII, guardrails</td>
+                <td>Ứng dụng LLM ra production</td>
+            </tr>
+        </table>
+
+        <p>Cách tra đúng không phải là đọc hết bảng từ trên xuống. Nó là một phép loại trừ 2 bước: <strong>(1) Việc trước mắt thuộc nhóm nào</strong> — mới bắt đầu dự án (Nhóm A), đang xử lý một bug cụ thể (Nhóm B), hay chuẩn bị đẩy lên production (Nhóm C)? <strong>(2) Trong nhóm đó, cột "Kích hoạt khi" nào khớp tình huống của ông nhất?</strong> Hai bước này thu hẹp 34 skill Global xuống còn 1 dòng cần đọc kỹ, trong vài giây.</p>
+
+        <h2>Cờ Đỏ Cần Nhận Diện: Trùng Tên Giữa Hai Tầng</h2>
+        <p>Có một loại dòng trong bảng mà ông không được phép đọc theo phản xạ thông thường — đó là khi <strong>cùng một tên skill xuất hiện ở cả bảng Global lẫn bảng Project-tier</strong>. Ví dụ điển hình: <code>rag-engineering</code> tồn tại ở Global (mục đích: chunking, hybrid search, reranking) <em>và</em> tồn tại y hệt tên trong danh sách 16 skill của RFI — nhưng bảng Project-tier lại ghi chú "trùng tên với global — cần xác nhận".</p>
+
+        <p>Đây chính là điều Day 7 đã cảnh báo: thiếu <code>extends</code> khiến <code>skill-master</code> — và cả ông — không thể phân biệt được hai khả năng hoàn toàn khác nhau:</p>
+        <ul>
+            <li><strong>Khả năng 1 — Override hợp lệ:</strong> Bản RFI cố tình tinh chỉnh lại chunking cho đặc thù dữ liệu điện lực, có khai báo <code>extends: "rag-engineering"</code> rõ ràng. An toàn.</li>
+            <li><strong>Khả năng 2 — Bản sao trôi dạt:</strong> Ai đó copy nguyên file Global sang Project từ lâu để "chỉnh nhanh cho kịp deadline", quên khai báo nguồn gốc. Từ đó, mỗi lần bản Global được nâng cấp, bản RFI lặng lẽ tụt hậu mà không ai biết.</li>
+        </ul>
+
+        <p>Bảng chỉ mục không tự phân biệt được hai khả năng này — nó chỉ có nhiệm vụ <em>gắn cờ</em> để ông (hoặc Claude ở Kênh 2) biết chỗ nào cần dừng lại xác minh trước khi dùng, thay vì tin tưởng mù quáng. Toàn hệ thống hiện có <strong>10 skill</strong> đang mang cờ đỏ này — đây chính là khoản nợ kỹ thuật lớn nhất, và ta sẽ xử lý cụ thể nó ở Day 9.</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" width="100%">
+            <defs>
+                <marker id="arrow-purple8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c6af7"/>
+                </marker>
+                <marker id="arrow-red8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#D85A30"/>
+                </marker>
+            </defs>
+
+            <!-- LEFT: normal lookup -->
+            <text x="170" y="28" fill="#7c6af7" font-size="13" font-weight="600" text-anchor="middle">TRA CỨU BÌNH THƯỜNG</text>
+
+            <rect x="40" y="45" width="260" height="40" rx="6" fill="#111" stroke="#7c6af7" stroke-width="1.5"/>
+            <text x="170" y="69" fill="#e8e6e0" font-size="11" text-anchor="middle">1. Việc trước mắt thuộc nhóm nào?</text>
+
+            <path d="M 170 85 L 170 110" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-purple8)"/>
+
+            <rect x="40" y="115" width="260" height="40" rx="6" fill="#111" stroke="#7c6af7" stroke-width="1.5"/>
+            <text x="170" y="139" fill="#e8e6e0" font-size="11" text-anchor="middle">2. Dòng nào khớp "Kích hoạt khi"?</text>
+
+            <path d="M 170 155 L 170 180" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-purple8)"/>
+
+            <rect x="40" y="185" width="260" height="45" rx="6" fill="rgba(124,106,247,0.15)" stroke="#7c6af7" stroke-width="2"/>
+            <text x="170" y="210" fill="#e8e6e0" font-size="12" font-weight="600" text-anchor="middle">1 skill đúng, tra trong ~10 giây</text>
+
+            <!-- Divider -->
+            <line x1="340" y1="20" x2="340" y2="300" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
+
+            <!-- RIGHT: red flag lookup -->
+            <text x="510" y="28" fill="#D85A30" font-size="13" font-weight="600" text-anchor="middle">GẶP TÊN TRÙNG 2 TẦNG</text>
+
+            <rect x="380" y="45" width="120" height="40" rx="6" fill="rgba(124,106,247,0.1)" stroke="#7c6af7" stroke-width="1.5"/>
+            <text x="440" y="69" fill="#e8e6e0" font-size="10" text-anchor="middle">Global: rag-engineering</text>
+
+            <rect x="520" y="45" width="120" height="40" rx="6" fill="rgba(29,158,117,0.1)" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="3"/>
+            <text x="580" y="69" fill="#e8e6e0" font-size="10" text-anchor="middle">RFI: rag-engineering</text>
+
+            <path d="M 440 85 L 500 105" fill="none" stroke="#D85A30" stroke-width="2"/>
+            <path d="M 580 85 L 520 105" fill="none" stroke="#D85A30" stroke-width="2"/>
+
+            <polygon points="510,110 530,145 490,145" fill="rgba(216,90,48,0.2)" stroke="#D85A30" stroke-width="2"/>
+            <text x="510" y="135" fill="#D85A30" font-size="16" text-anchor="middle" font-weight="bold">!</text>
+
+            <text x="510" y="165" fill="#D85A30" font-size="10" text-anchor="middle">extends?</text>
+            <text x="510" y="178" fill="#D85A30" font-size="10" text-anchor="middle">không rõ</text>
+
+            <path d="M 510 185 L 510 210" fill="none" stroke="#D85A30" stroke-width="2" marker-end="url(#arrow-red8)"/>
+
+            <rect x="400" y="215" width="220" height="55" rx="6" fill="rgba(216,90,48,0.12)" stroke="#D85A30" stroke-width="2"/>
+            <text x="510" y="238" fill="#e8e6e0" font-size="11" font-weight="600" text-anchor="middle">DỪNG — xác minh trước khi dùng</text>
+            <text x="510" y="256" fill="#D85A30" font-size="10" text-anchor="middle">Override thật, hay bản trôi dạt?</text>
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Tra cứu bình thường chỉ mất 2 bước loại trừ. Nhưng khi gặp tên trùng ở cả hai tầng mà không có "extends" rõ ràng, quy trình phải dừng lại xác minh — đây là cờ đỏ, không phải một dòng bảng bình thường.</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Thử áp dụng ngay (~10 phút)</h3>
+        <p>Mở tài liệu gốc <code>skill-master.md</code> (mục 2 và mục 3) — lần này với vai trò tra cứu, không phải đọc hiểu:</p>
+        <ol>
+            <li>Nghĩ ra một tình huống thật ông sắp làm trong tuần này (ví dụ: chuẩn bị fix một bug, hoặc chuẩn bị đưa một API lên production).</li>
+            <li>Áp dụng đúng phép loại trừ 2 bước ở trên: xác định nhóm (A-F), rồi tìm dòng khớp "Kích hoạt khi". Đo thời gian ông tìm ra dòng đúng — mục tiêu là dưới 15 giây.</li>
+            <li>Sau đó lướt qua mục 3 (bảng Project-tier RFI), chỉ tìm các dòng có ghi chú "trùng tên với global — cần xác nhận". Đếm xem ông tìm được bao nhiêu dòng như vậy trong 30 giây — con số này ông sẽ dùng lại ở Day 9.</li>
+        </ol>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Nếu một AI IDE đọc nhầm bản Global thay vì bản Project đã override (vì tên trùng và không có <code>extends</code> để phân biệt độ ưu tiên), hậu quả đó có thể âm thầm tới mức nào trước khi ông phát hiện ra qua một lỗi thực tế — và cơ chế nào (ngoài việc bổ sung <code>extends</code>) có thể giúp ông phát hiện sớm hơn?</p>
+        </div>
+        <div class="sources">
+            Nguồn tài liệu: Tổng hợp và biên soạn dựa trên tài liệu vận hành nội bộ "skill-master" (mục 2, 3), tiếp nối trực tiếp khái niệm 2 tầng Global/Project đã trình bày ở Day 7.
+        </div>
+    </footer>
+</body>
+</html>
