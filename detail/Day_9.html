@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 9: Vận Hành Thực Chiến — Checklist 2 Kênh & Dọn Nợ Kỹ Thuật Số 1</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #e8e6e0;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+        header {
+            border-bottom: 2px solid #7c6af7;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .date {
+            color: #c2c0b6;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        h1 {
+            color: #e8e6e0;
+            font-weight: 500;
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+        .tags {
+            color: #7c6af7;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        h2 {
+            color: #1D9E75;
+            font-weight: 500;
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            color: #e8e6e0;
+        }
+        strong {
+            color: #EF9F27;
+            font-weight: 500;
+        }
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+        }
+        .highlight {
+            color: #D85A30;
+            font-weight: 500;
+        }
+        code {
+            background-color: #1a1a1a;
+            color: #EF9F27;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .two-col {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .col {
+            flex: 1;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.2rem;
+        }
+        .col h4 {
+            margin: 0 0 0.8rem 0;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .col.k1 h4 { color: #7c6af7; }
+        .col.k2 h4 { color: #1D9E75; }
+        .col ol { padding-left: 1.2rem; margin-bottom: 0; font-size: 0.9rem; }
+        .col li { margin-bottom: 0.5rem; }
+        .debt-list {
+            background: rgba(216, 90, 48, 0.06);
+            border: 1px solid rgba(216, 90, 48, 0.3);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+        .debt-list code { color: #D85A30; background: rgba(216,90,48,0.1); }
+        .diagram-container {
+            margin: 3rem 0;
+            padding: 1.5rem;
+            background: rgba(124, 106, 247, 0.04);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 106, 247, 0.2);
+        }
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #c2c0b6;
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+        .action-box {
+            background: linear-gradient(145deg, rgba(124,106,247,0.08), rgba(15,15,15,1));
+            border-left: 4px solid #7c6af7;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 3rem 0;
+        }
+        .action-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #7c6af7;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        .question-box {
+            margin-bottom: 1.5rem;
+            background: rgba(29, 158, 117, 0.05);
+            border-left: 4px solid #1D9E75;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .question-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: #1D9E75;
+            font-weight: 500;
+        }
+        .sources {
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="date">Thứ Năm, 16/07/2026</span>
+        <h1>Day 9: Vận Hành Thực Chiến — Checklist 2 Kênh & Dọn Nợ Kỹ Thuật Số 1</h1>
+        <div class="tags">#SkillMaster #ConfigDrift #SSOT #TechnicalDebt</div>
+    </header>
+
+    <main>
+        <p>Chào ông, Day 7 ta hiểu <em>vì sao</em> cần <code>skill-master</code>, Day 8 ta học <em>cách tra</em> một dòng trong bảng chỉ mục. Hôm nay là ngày cuối của chuỗi ba bài — và cũng là ngày duy nhất ông sẽ rời khỏi lý thuyết để thật sự chạm vào một file. Hai việc cần làm: (1) nắm quy trình vận hành hằng ngày ở cả hai kênh, (2) xử lý dứt điểm khoản nợ kỹ thuật lớn nhất đang treo trong hệ thống.</p>
+
+        <h2>Hai Quy Trình Vận Hành Song Song</h2>
+        <p>Đúng như phân vai đã nói ở Day 7, Kênh 1 và Kênh 2 không dùng chung một quy trình — vì người thực thi khác nhau.</p>
+
+        <div class="two-col">
+            <div class="col k1">
+                <h4>Kênh 1 — Ông tự thao tác AI IDE (nội tâm hóa, không tra cứu)</h4>
+                <ol>
+                    <li>Spec trước, code sau</li>
+                    <li>Đúng tầng trước khi code (Global hay override Project?)</li>
+                    <li>Diff nhỏ, review trước khi chạy</li>
+                    <li>Gate trước khi fix bug — qua <code>issue-resolution-knowledgebase</code> rồi mới đến <code>issue-intake-checklist</code></li>
+                    <li>Test ngay, không dồn cuối</li>
+                    <li>Debug có giả thuyết — không đưa traceback trần</li>
+                    <li>Đóng vòng lặp — ghi <code>dev-journal</code> + entry tra cứu được</li>
+                </ol>
+            </div>
+            <div class="col k2">
+                <h4>Kênh 2 — Claude soạn prompt hộ ông (tra cứu bắt buộc mỗi lần)</h4>
+                <ol>
+                    <li>Xác định đang ở dự án nào → tra bảng xem có override</li>
+                    <li>Nếu có <code>extends</code>, prompt phải nhắc đọc <strong>cả 2 file</strong>, ưu tiên override khi mâu thuẫn</li>
+                    <li>Tác vụ sửa lỗi → nhúng sẵn khung <code>issue-intake-checklist</code> Phần A, không để AI IDE tự bịa</li>
+                    <li>Tác vụ tạo dự án mới → chỉ định đúng template trong <code>project-structure</code></li>
+                    <li>Luôn kết prompt bằng yêu cầu cập nhật <code>dev-journal</code> + <code>issue-resolution-knowledgebase</code></li>
+                </ol>
+            </div>
+        </div>
+
+        <p>Điểm chung của cả hai cột: <strong>bước "đúng tầng" luôn đứng gần đầu quy trình</strong>, không phải cuối. Đây không phải trùng hợp — nếu ông code xong rồi mới phát hiện đang sửa nhầm bản Global thay vì bản override của Project (hoặc ngược lại), công sức đó gần như phải làm lại từ đầu. Xác định tầng là chi phí rẻ nhất phải trả sớm nhất.</p>
+
+        <h2>Khoản Nợ Kỹ Thuật Số 1: 10 Skill Trùng Tên Chưa Xác Minh</h2>
+        <p>Day 8 ông đã tự đếm được các dòng "trùng tên với global — cần xác nhận" trong bảng Project-tier RFI. Đây là danh sách đầy đủ, và tài liệu gốc xếp nó là <strong>rủi ro trôi dạt cấu hình (config drift) cao nhất trong toàn hệ sinh thái</strong> — ưu tiên số 1, trước cả việc bổ sung 17 skill còn thiếu:</p>
+
+        <div class="debt-list">
+            <code>electrical-engineering-design</code> · <code>pscad-tool-architect</code> · <code>office-automation-python</code> · <code>rag-engineering</code> · <code>graphrag-neo4j</code> · <code>agent-orchestration</code> · <code>langgraph-langsmith</code> · <code>llmops-observability</code> · <code>llm-selection-optimization</code> · <code>walkthrough-artifact-generator</code>
+        </div>
+
+        <p>Với mỗi skill trong danh sách này, chỉ có đúng 3 kết cục khả dĩ khi ông mở file thật ra kiểm tra:</p>
+        <ul>
+            <li><strong>Override thật, thiếu khai báo:</strong> nội dung có phần khác biệt hợp lý cho RFI (ví dụ: điện lực cần thêm chuẩn IEEE/IEC) → chỉ cần vá thêm <code>extends: "&lt;tên-skill-global&gt;"</code> vào frontmatter.</li>
+            <li><strong>Bản sao chép tay 100%:</strong> nội dung giống hệt bản Global, không có phần khác biệt nào → nên xoá bản Project, để AI IDE tự fallback về Global (đúng cơ chế đã học ở Day 7), tránh 2 nguồn sự thật.</li>
+            <li><strong>Trùng tên nhưng khác mục đích hoàn toàn:</strong> hiếm nhưng có thể xảy ra → đổi tên một trong hai bản để loại bỏ nhầm lẫn, đánh dấu "độc lập, không liên quan global" theo đúng quy ước bảo trì.</li>
+        </ul>
+
+        <p>Không có cách nào xác định kết cục nào đúng chỉ bằng cách đọc bảng chỉ mục — bảng chỉ gắn cờ, còn việc xác minh bắt buộc phải mở file thật. Đây chính là lý do bài tập hôm nay không phải một bài tập minh họa, mà là công việc thật ông cần làm trước khi thêm bất kỳ skill nào khác vào hệ thống.</p>
+    </main>
+
+    <div class="diagram-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 320" width="100%">
+            <defs>
+                <marker id="arrow-p9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c6af7"/>
+                </marker>
+                <marker id="arrow-g9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#c2c0b6"/>
+                </marker>
+            </defs>
+
+            <text x="340" y="26" fill="#e8e6e0" font-size="14" font-weight="600" text-anchor="middle">Quy Trình Xác Minh 1 Skill Trùng Tên</text>
+
+            <rect x="270" y="45" width="140" height="40" rx="6" fill="rgba(216,90,48,0.15)" stroke="#D85A30" stroke-width="2"/>
+            <text x="340" y="70" fill="#e8e6e0" font-size="11" text-anchor="middle" font-weight="600">Skill có cờ đỏ</text>
+
+            <path d="M 340 85 L 340 110" fill="none" stroke="#c2c0b6" stroke-width="2" marker-end="url(#arrow-g9)"/>
+
+            <rect x="240" y="115" width="200" height="40" rx="6" fill="#111" stroke="#c2c0b6" stroke-width="1.5"/>
+            <text x="340" y="140" fill="#e8e6e0" font-size="11" text-anchor="middle">Mở file thật, so nội dung 2 bản</text>
+
+            <path d="M 340 155 L 200 190" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-p9)"/>
+            <path d="M 340 155 L 340 190" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-p9)"/>
+            <path d="M 340 155 L 480 190" fill="none" stroke="#7c6af7" stroke-width="2" marker-end="url(#arrow-p9)"/>
+
+            <rect x="110" y="195" width="180" height="55" rx="6" fill="rgba(29,158,117,0.1)" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="200" y="215" fill="#1D9E75" font-size="10" font-weight="600" text-anchor="middle">Override thật</text>
+            <text x="200" y="232" fill="#e8e6e0" font-size="10" text-anchor="middle">Vá thêm "extends"</text>
+
+            <rect x="250" y="195" width="180" height="55" rx="6" fill="rgba(216,90,48,0.1)" stroke="#D85A30" stroke-width="1.5"/>
+            <text x="340" y="215" fill="#D85A30" font-size="10" font-weight="600" text-anchor="middle">Bản sao chép tay</text>
+            <text x="340" y="232" fill="#e8e6e0" font-size="10" text-anchor="middle">Xoá, fallback Global</text>
+
+            <rect x="390" y="195" width="180" height="55" rx="6" fill="rgba(239,159,39,0.1)" stroke="#EF9F27" stroke-width="1.5"/>
+            <text x="480" y="215" fill="#EF9F27" font-size="10" font-weight="600" text-anchor="middle">Khác mục đích</text>
+            <text x="480" y="232" fill="#e8e6e0" font-size="10" text-anchor="middle">Đổi tên, đánh dấu độc lập</text>
+
+            <text x="340" y="285" fill="#c2c0b6" font-size="10" text-anchor="middle">Áp dụng cho từng skill trong 10 skill — 3 kết cục, không có kết cục thứ 4</text>
+        </svg>
+        <div class="diagram-caption">Sơ đồ: Mỗi skill trùng tên phải đi qua đúng một trong ba nhánh xác minh — bảng chỉ mục chỉ gắn cờ, việc mở file thật để quyết định nhánh nào là việc con người (hoặc Claude ở Kênh 2 khi được giao) phải làm.</div>
+    </div>
+
+    <div class="action-box">
+        <h3>Bài tập hôm nay — việc thật, không phải minh họa (~25-30 phút)</h3>
+        <p>Chọn <strong>3 trong 10 skill</strong> ở danh sách nợ kỹ thuật phía trên. Với mỗi skill:</p>
+        <ol>
+            <li>Mở cả hai file thật: bản Global (<code>.trae/skills/&lt;skill&gt;/SKILL.md</code>) và bản Project RFI (<code>.gemini/config/skills/&lt;skill&gt;/SKILL.md</code>).</li>
+            <li>So nội dung, xác định thuộc kết cục nào trong 3 kết cục ở sơ đồ trên.</li>
+            <li>Tạo output thật tương ứng: nếu là override thật — viết patch thêm dòng <code>extends: "&lt;tên-skill-global&gt;"</code> vào frontmatter; nếu là bản sao chép tay — chuẩn bị lệnh xoá kèm ghi chú lý do; nếu khác mục đích — đề xuất tên mới cho một trong hai bản.</li>
+        </ol>
+        <p>Kết thúc bài tập, ông sẽ có 3 patch/quyết định thật, không phải 3 dòng nhận xét lý thuyết — và giảm được 3/10 rủi ro config drift đang treo trong hệ thống ngay hôm nay.</p>
+    </div>
+
+    <footer>
+        <div class="question-box">
+            <h3>Câu hỏi hôm nay</h3>
+            <p>Sau khi xử lý xong 3 skill đầu tiên, ông sẽ đặt nhịp bảo trì SSOT này theo tần suất nào để 7 skill còn lại (và 17 skill chưa được liệt kê) không tiếp tục dồn thành nợ — mỗi lần thêm skill mới ngay lập tức, hay theo một mốc định kỳ như tài liệu gốc gợi ý (mỗi release)? Đánh đổi giữa hai nhịp đó là gì?</p>
+        </div>
+        <div class="sources">
+            Nguồn tài liệu: Tổng hợp và biên soạn dựa trên tài liệu vận hành nội bộ "skill-master" (mục 3, 5, 6, 7), khép lại chuỗi ba bài Day 7 - Day 8 - Day 9 về kiến trúc điều phối skill.
+        </div>
+    </footer>
+</body>
+</html>
